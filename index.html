@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>UniGuide — Lobachevsky University</title>
+
   <style>
     :root{
       --blue:#1e40af;
@@ -16,56 +17,128 @@
       --chip:#eff6ff;
       --shadow:0 12px 30px rgba(2,6,23,.10);
       --radius:18px;
+
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --bad:#ef4444;
     }
+
+    /* Dark mode overrides */
+    body.dark{
+      --bg:#0b1220;
+      --card:#0f172a;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --line:#1f2a44;
+      --chip:#101b33;
+      --shadow:0 18px 42px rgba(0,0,0,.35);
+    }
+
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:var(--bg);
+      color:var(--text);
+      transition:.2s;
+    }
     a{color:inherit}
-    .wrap{max-width:1150px;margin:0 auto;padding:18px}
+    .wrap{max-width:1180px;margin:0 auto;padding:18px}
+
     header{
       position:sticky;top:0;z-index:50;
-      background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+      background:color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter:blur(10px);
       border-bottom:1px solid var(--line);
     }
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .brand{display:flex;align-items:center;gap:12px}
-    .uLogo{width:44px;height:44px;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--line);background:white}
-    .brand h1{margin:0;font-size:16px;color:var(--blue);font-weight:900;letter-spacing:.2px}
-    .brand small{display:block;margin-top:3px;color:var(--muted);font-weight:700}
-    .account{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-    .avatar{width:42px;height:42px;border-radius:999px;border:2px solid var(--chip);overflow:hidden}
+    .uLogo{
+      width:44px;height:44px;border-radius:14px;
+      box-shadow:var(--shadow);
+      overflow:hidden;border:1px solid var(--line);
+      background:var(--card);
+      display:grid;place-items:center;
+      flex:0 0 auto;
+    }
+    .brand h1{margin:0;font-size:16px;color:var(--blue);font-weight:950;letter-spacing:.2px}
+    body.dark .brand h1{color:color-mix(in srgb, var(--blue2) 75%, white)}
+    .brand small{display:block;margin-top:3px;color:var(--muted);font-weight:750}
+
+    .account{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .avatar{width:42px;height:42px;border-radius:999px;border:2px solid var(--chip);overflow:hidden;background:var(--card)}
     .accText{font-size:13px;font-weight:800;color:var(--muted);line-height:1.25}
     .accText b{color:var(--text)}
-    .lang{display:flex;align-items:center;gap:8px}
-    select{
-      padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:white;
-      font-weight:800;color:var(--text);outline:none
-    }
+
     .pill{
       padding:8px 10px;border-radius:999px;border:1px solid var(--line);
-      background:var(--chip);color:var(--blue);font-weight:900;font-size:12px;
+      background:var(--chip);color:var(--blue);font-weight:950;font-size:12px;
     }
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    select, .input{
+      padding:9px 10px;border-radius:12px;border:1px solid var(--line);
+      background:var(--card);color:var(--text);
+      font-weight:850;outline:none
+    }
+    .iconBtn{
+      border:1px solid var(--line);
+      background:var(--card);
+      padding:9px 10px;border-radius:12px;
+      font-weight:950;cursor:pointer;
+      box-shadow:0 6px 16px rgba(2,6,23,.06);
+      display:inline-flex;align-items:center;gap:8px;
+    }
+    body.dark .iconBtn{box-shadow:none}
+    .iconBtn:active{transform:translateY(1px)}
+
+    .nav{
+      display:flex;gap:10px;flex-wrap:wrap;
+      padding:10px 0 0;
+    }
+    .nav a{
+      text-decoration:none;
+      font-weight:950;font-size:12px;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--card);
+      color:var(--muted);
+    }
+    .nav a.active{
+      background:linear-gradient(135deg, color-mix(in srgb, var(--blue) 14%, var(--card)), var(--card));
+      color:var(--text);
+      border-color:color-mix(in srgb, var(--blue) 35%, var(--line));
+    }
+
     .hero{
       margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);
-      background:linear-gradient(135deg, #ffffff, #f1f7ff);
+      background:linear-gradient(135deg, color-mix(in srgb, var(--card) 92%, white), color-mix(in srgb, var(--chip) 60%, var(--card)));
       box-shadow:var(--shadow);overflow:hidden;
     }
-    .heroGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:0}
+    .heroGrid{display:grid;grid-template-columns:1.2fr .8fr}
     @media(max-width:900px){.heroGrid{grid-template-columns:1fr}}
     .heroMain{padding:22px}
     .heroMain h2{margin:0 0 8px;color:var(--blue);font-size:28px;line-height:1.12}
-    .heroMain p{margin:0 0 14px;color:var(--muted);font-weight:650;line-height:1.65}
-    .heroSide{padding:18px;border-left:1px solid var(--line);background:rgba(255,255,255,.6)}
+    body.dark .heroMain h2{color:color-mix(in srgb, var(--blue2) 70%, white)}
+    .heroMain p{margin:0 0 14px;color:var(--muted);font-weight:700;line-height:1.65}
+    .heroSide{padding:18px;border-left:1px solid var(--line);background:color-mix(in srgb, var(--card) 75%, transparent)}
     @media(max-width:900px){.heroSide{border-left:none;border-top:1px solid var(--line)}}
+
     .miniCard{
-      border:1px solid var(--line);border-radius:16px;background:white;padding:14px;box-shadow:0 6px 16px rgba(2,6,23,.06)
+      border:1px solid var(--line);border-radius:16px;background:var(--card);
+      padding:14px;box-shadow:0 6px 16px rgba(2,6,23,.06)
     }
+    body.dark .miniCard{box-shadow:none}
     .miniCard h3{margin:0 0 10px;font-size:14px;color:var(--blue)}
-    .miniCard ul{margin:0;padding-left:18px;color:var(--muted);font-weight:650;line-height:1.7}
+    body.dark .miniCard h3{color:color-mix(in srgb, var(--blue2) 70%, white)}
+    .miniCard ul{margin:0;padding-left:18px;color:var(--muted);font-weight:750;line-height:1.7}
+
     .section{margin-top:22px}
     .sectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
     .sectionHead h3{margin:0;font-size:20px;color:var(--text)}
-    .sectionHead p{margin:0;color:var(--muted);font-weight:700}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+    .sectionHead p{margin:0;color:var(--muted);font-weight:750}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+
     .card{
       background:var(--card);
       border:1px solid var(--line);
@@ -76,43 +149,138 @@
       transition:.16s;
       display:flex;gap:12px;align-items:flex-start;
     }
+    body.dark .card{box-shadow:none}
     .card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(2,6,23,.10)}
+    body.dark .card:hover{box-shadow:none}
     .iconBox{
       width:46px;height:46px;border-radius:14px;
-      background:linear-gradient(135deg, rgba(37,99,235,.15), rgba(30,64,175,.08));
+      background:linear-gradient(135deg, color-mix(in srgb, var(--blue2) 16%, transparent), color-mix(in srgb, var(--blue) 8%, transparent));
       border:1px solid var(--line);
       display:grid;place-items:center;flex:0 0 auto;
     }
     .card h4{margin:0;color:var(--blue);font-size:15px}
-    .card p{margin:6px 0 0;color:var(--muted);font-weight:650;font-size:13px;line-height:1.5}
-    .navRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn{
+    body.dark .card h4{color:color-mix(in srgb, var(--blue2) 70%, white)}
+    .card p{margin:6px 0 0;color:var(--muted);font-weight:750;font-size:13px;line-height:1.5}
+
+    .note{
+      background:var(--card);
       border:1px solid var(--line);
-      background:white;
-      padding:10px 12px;
-      border-radius:14px;
-      font-weight:900;
-      cursor:pointer;
-      box-shadow:0 6px 16px rgba(2,6,23,.06);
+      border-radius:16px;
+      padding:12px;
+      color:var(--muted);
+      font-weight:750;
+      line-height:1.6;
     }
-    .btn.primary{background:var(--blue);border-color:transparent;color:white}
-    .btn:active{transform:translateY(1px)}
+
+    .subgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+    .infoCard{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+    }
+    .infoCard b{display:block;font-size:14px;margin-bottom:6px}
+    .infoCard ul{margin:0;padding-left:18px;color:var(--muted);font-weight:750;line-height:1.7}
+    .infoCard .kpiRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .kpi{
+      border:1px solid var(--line);
+      background:color-mix(in srgb, var(--chip) 55%, var(--card));
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:950;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;align-items:center;gap:8px;
+    }
+    .dot{width:10px;height:10px;border-radius:99px;background:var(--ok)}
+    .dot.warn{background:var(--warn)}
+    .dot.bad{background:var(--bad)}
+
+    .list{
+      display:grid;gap:10px;
+      margin-top:10px;
+    }
+    .rowItem{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+    }
+    .rowItem b{display:block}
+    .rowItem small{display:block;color:var(--muted);font-weight:750;margin-top:4px;line-height:1.5}
+    .status{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:950;
+      font-size:12px;
+      color:var(--muted);
+      background:transparent;
+      white-space:nowrap;
+    }
+
     .page{display:none}
     .page.active{display:block}
+
     .breadcrumbs{
       display:flex;align-items:center;gap:10px;color:var(--muted);
-      font-weight:800;font-size:13px;margin:8px 0 14px;
+      font-weight:900;font-size:13px;margin:8px 0 14px;
     }
     .breadcrumbs a{color:var(--blue);text-decoration:none}
-    .note{
-      background:white;border:1px solid var(--line);
-      border-radius:16px;padding:12px;color:var(--muted);
-      font-weight:650;line-height:1.6;
-    }
+
     .footer{
       margin-top:24px;padding:18px 0;border-top:1px solid var(--line);
-      color:var(--muted);font-weight:700;font-size:12px;
+      color:var(--muted);font-weight:750;font-size:12px;
     }
+
+    /* Modal (AI Support) */
+    .modalBackdrop{
+      position:fixed;inset:0;background:rgba(2,6,23,.55);
+      display:none;align-items:center;justify-content:center;z-index:200;
+      padding:16px;
+    }
+    .modal{
+      width:min(720px, 100%);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      background:color-mix(in srgb, var(--chip) 55%, var(--card));
+      font-weight:950;
+    }
+    .modalBody{padding:14px}
+    .chat{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:color-mix(in srgb, var(--chip) 40%, var(--card));
+      padding:12px;
+      max-height:320px;
+      overflow:auto;
+      display:grid;gap:10px;
+    }
+    .msg{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      width:fit-content;
+      max-width:85%;
+      font-weight:750;
+      color:var(--text);
+      line-height:1.55;
+    }
+    .msg.me{margin-left:auto;border-color:color-mix(in srgb, var(--blue2) 35%, var(--line))}
+    .msg.bot{border-color:color-mix(in srgb, var(--ok) 35%, var(--line))}
+    .chatRow{display:flex;gap:10px;margin-top:10px}
+    .chatRow input{flex:1}
+
     /* RTL support (Arabic) */
     [dir="rtl"] .topbar{flex-direction:row-reverse}
     [dir="rtl"] .brand{flex-direction:row-reverse}
@@ -120,16 +288,17 @@
     [dir="rtl"] .heroGrid{direction:rtl}
     [dir="rtl"] .heroSide{border-left:none;border-right:1px solid var(--line)}
     @media(max-width:900px){[dir="rtl"] .heroSide{border-right:none;border-top:1px solid var(--line)}}
+    [dir="rtl"] .breadcrumbs{flex-direction:row-reverse}
   </style>
 </head>
-<body>
 
+<body>
 <header>
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
-        <!-- Lobachevsky University logo placeholder (embedded SVG) -->
         <div class="uLogo" aria-label="Lobachevsky University logo">
+          <!-- Embedded logo-like SVG -->
           <svg viewBox="0 0 64 64" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
@@ -137,7 +306,7 @@
                 <stop offset="1" stop-color="#2563eb"/>
               </linearGradient>
             </defs>
-            <rect x="0" y="0" width="64" height="64" rx="14" fill="white"/>
+            <rect width="64" height="64" rx="14" fill="white"/>
             <path d="M14 46V20h8l10 12 10-12h8v26h-8V33L32 43 22 33v13z" fill="url(#g)"/>
             <rect x="14" y="50" width="36" height="4" rx="2" fill="#1e40af" opacity=".25"/>
           </svg>
@@ -159,7 +328,8 @@
 
         <span class="pill" id="t_dummyBadge">Dummy Account</span>
 
-        <div class="lang">
+        <div class="controls">
+          <input class="input" id="searchBox" type="search" placeholder="Search (Visa, Courses, Housing...)">
           <select id="langSelect" aria-label="Language">
             <option value="en" selected>English</option>
             <option value="ar">Arabic</option>
@@ -167,15 +337,27 @@
             <option value="es">Spanish</option>
             <option value="ru">Russian</option>
           </select>
+          <button class="iconBtn" onclick="toggleDark()" id="t_darkBtn">🌙 Dark</button>
+          <button class="iconBtn" onclick="openAiModal()" id="t_aiBtnTop">🤖 AI Support</button>
         </div>
       </div>
+    </div>
+
+    <div class="nav" id="topNav">
+      <a href="javascript:void(0)" class="active" onclick="go('home');setActiveNav('home')" id="nav_home">Home</a>
+      <a href="javascript:void(0)" onclick="go('visa');setActiveNav('visa')" id="nav_visa">Visa</a>
+      <a href="javascript:void(0)" onclick="go('medical');setActiveNav('medical')" id="nav_medical">Medical</a>
+      <a href="javascript:void(0)" onclick="go('courses');setActiveNav('courses')" id="nav_courses">Courses</a>
+      <a href="javascript:void(0)" onclick="go('pending');setActiveNav('pending')" id="nav_pending">Pending</a>
+      <a href="javascript:void(0)" onclick="go('residence');setActiveNav('residence')" id="nav_residence">Residence</a>
+      <a href="javascript:void(0)" onclick="go('housing');setActiveNav('housing')" id="nav_housing">Housing</a>
     </div>
   </div>
 </header>
 
 <div class="wrap">
 
-  <!-- HOME PAGE -->
+  <!-- HOME -->
   <section class="page active" id="page-home">
     <div class="hero">
       <div class="heroGrid">
@@ -185,39 +367,37 @@
             UniGuide helps new students understand the most important university steps when joining Lobachevsky University.
             Choose a section below to see clear guidance.
           </p>
-
-          <div class="navRow">
-            <button class="btn primary" onclick="go('visa')" id="t_goVisaBtn">Open Visa</button>
-            <button class="btn" onclick="scrollToId('home-sections')" id="t_browseBtn">Browse Sections</button>
+          <div class="note" id="t_homeNote">
+            This is a student project demo. All data is placeholder and written in a student-friendly style.
           </div>
         </div>
 
         <div class="heroSide">
           <div class="miniCard">
-            <h3 id="t_quickTipsTitle">Quick tips</h3>
+            <h3 id="t_quickTitle">Quick Checklist</h3>
             <ul>
-              <li id="t_tip1">Keep your documents organized (digital + paper).</li>
-              <li id="t_tip2">Track deadlines and submit early.</li>
-              <li id="t_tip3">If you are unsure, use AI Support for quick answers.</li>
+              <li id="t_quick1">Prepare your key documents (passport/ID, enrollment confirmation).</li>
+              <li id="t_quick2">Complete required medical check-ups if needed.</li>
+              <li id="t_quick3">Register courses and confirm your schedule.</li>
+              <li id="t_quick4">Check housing/residence options early.</li>
             </ul>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="section" id="home-sections">
+    <div class="section">
       <div class="sectionHead">
         <div>
           <h3 id="t_sectionsTitle">Main Sections</h3>
-          <p id="t_sectionsSub">Simple icons, clear steps, student-friendly wording.</p>
+          <p id="t_sectionsSub">Simple icons, clean layout, and clear steps.</p>
         </div>
       </div>
 
-      <div class="grid">
-        <!-- VISA -->
-        <div class="card" onclick="go('visa')">
+      <div class="grid" id="mainCards">
+        <!-- Visa -->
+        <div class="card" data-search="visa invitation extension documents support" onclick="go('visa');setActiveNav('visa')">
           <div class="iconBox" aria-hidden="true">
-            <!-- passport icon -->
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="6" y="3" width="12" height="18" rx="2"></rect>
               <path d="M9 7h6"></path>
@@ -232,7 +412,7 @@
         </div>
 
         <!-- Medical -->
-        <div class="card" onclick="toast('Medical Check-ups')">
+        <div class="card" data-search="medical checkup health clinic insurance" onclick="go('medical');setActiveNav('medical')">
           <div class="iconBox" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 9c0 6-8 12-8 12S4 15 4 9a4 4 0 0 1 8-1 4 4 0 0 1 8 1z"></path>
@@ -247,7 +427,7 @@
         </div>
 
         <!-- Courses -->
-        <div class="card" onclick="toast('Courses')">
+        <div class="card" data-search="courses registration schedule timetable credits" onclick="go('courses');setActiveNav('courses')">
           <div class="iconBox" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 5h16"></path>
@@ -265,15 +445,13 @@
         </div>
 
         <!-- Pending Orders -->
-        <div class="card" onclick="toast('Pending Orders')">
+        <div class="card" data-search="pending orders requests approval ticket" onclick="go('pending');setActiveNav('pending')">
           <div class="iconBox" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 3h10"></path>
-              <path d="M7 7h10"></path>
-              <path d="M7 11h6"></path>
               <rect x="5" y="3" width="14" height="18" rx="2"></rect>
-              <path d="M16 15h.01"></path>
-              <path d="M14 17h2"></path>
+              <path d="M8 7h8"></path>
+              <path d="M8 11h6"></path>
+              <path d="M8 15h8"></path>
             </svg>
           </div>
           <div>
@@ -282,8 +460,8 @@
           </div>
         </div>
 
-        <!-- University Residence -->
-        <div class="card" onclick="toast('University Residence')">
+        <!-- Residence -->
+        <div class="card" data-search="residence dormitory campus check-in rules" onclick="go('residence');setActiveNav('residence')">
           <div class="iconBox" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 21h18"></path>
@@ -297,8 +475,8 @@
           </div>
         </div>
 
-        <!-- Student Housing -->
-        <div class="card" onclick="toast('Student Housing')">
+        <!-- Housing -->
+        <div class="card" data-search="housing off-campus rent apartment contract" onclick="go('housing');setActiveNav('housing')">
           <div class="iconBox" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 10l9-7 9 7"></path>
@@ -313,7 +491,7 @@
         </div>
 
         <!-- AI Support -->
-        <div class="card" onclick="openAiSupport()">
+        <div class="card" data-search="ai support help questions" onclick="openAiModal()">
           <div class="iconBox" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-1v1a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-1H5a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4z"></path>
@@ -324,26 +502,25 @@
           </div>
           <div>
             <h4 id="t_ai">AI Support</h4>
-            <p id="t_aiDesc">Ask support questions and get clear answers (demo).</p>
+            <p id="t_aiDesc">Ask support questions and get clear answers (demo chat).</p>
           </div>
         </div>
-
       </div>
 
-      <div style="margin-top:14px" class="note" id="t_noteHome">
-        Note: This is a student project demo. The content uses dummy data and example steps for clarity.
+      <div style="margin-top:14px" class="note" id="t_noteHome2">
+        Tip: Use the search box at the top to quickly find a section (e.g., "visa", "housing", "courses").
       </div>
-    </div>
 
-    <div class="footer" id="t_footer">
-      © 2025 UniGuide — Lobachevsky University (Demo Website). All data shown is placeholder.
+      <div class="footer" id="t_footerHome">
+        © 2025 UniGuide — Lobachevsky University (Demo Website). All data shown is placeholder.
+      </div>
     </div>
   </section>
 
-  <!-- VISA PAGE -->
+  <!-- VISA -->
   <section class="page" id="page-visa">
     <div class="breadcrumbs">
-      <a href="javascript:void(0)" onclick="go('home')" id="t_backHome">← Back to Home</a>
+      <a href="javascript:void(0)" onclick="go('home');setActiveNav('home')" id="t_backHome">← Back to Home</a>
       <span>•</span>
       <span id="t_visaBreadcrumb">Visa</span>
     </div>
@@ -353,13 +530,10 @@
         <h3 id="t_visaTitle">Visa Services</h3>
         <p id="t_visaSub">Choose a topic below for clear, student-friendly guidance.</p>
       </div>
-      <div class="navRow">
-        <button class="btn primary" onclick="go('home')" id="t_homeBtn">Home</button>
-      </div>
     </div>
 
     <div class="grid">
-      <div class="card" onclick="toast('Visa Extension')">
+      <div class="card" onclick="toast('visaExt')" data-search="visa extension renew">
         <div class="iconBox" aria-hidden="true">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12a9 9 0 1 1-3-6.7"></path>
@@ -372,7 +546,7 @@
         </div>
       </div>
 
-      <div class="card" onclick="toast('Required Documents')">
+      <div class="card" onclick="toast('reqDocs')" data-search="required documents checklist">
         <div class="iconBox" aria-hidden="true">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -387,7 +561,7 @@
         </div>
       </div>
 
-      <div class="card" onclick="toast('University Invitation')">
+      <div class="card" onclick="toast('invite')" data-search="university invitation letter">
         <div class="iconBox" aria-hidden="true">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 4h16v16H4z"></path>
@@ -400,7 +574,7 @@
         </div>
       </div>
 
-      <div class="card" onclick="toast('Visa Support')">
+      <div class="card" onclick="toast('visaSupport')" data-search="support contact help">
         <div class="iconBox" aria-hidden="true">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
@@ -415,310 +589,649 @@
       </div>
     </div>
 
-    <div style="margin-top:14px" class="note" id="t_noteVisa">
-      Tip: Always check deadlines and keep copies of your documents. If you are unsure, contact the International Office.
+    <div class="section">
+      <div class="subgrid">
+        <div class="infoCard">
+          <b id="t_visaStepsTitle">Recommended Steps (Simple)</b>
+          <ul id="t_visaStepsList">
+            <li>Check your visa expiration date early.</li>
+            <li>Prepare copies of passport, migration card, and registration.</li>
+            <li>Visit the International Office if you need confirmation.</li>
+            <li>Keep digital backups of every document.</li>
+          </ul>
+          <div class="kpiRow">
+            <span class="kpi"><span class="dot warn"></span><span id="t_visaKpi1">Start 30 days before expiry</span></span>
+            <span class="kpi"><span class="dot"></span><span id="t_visaKpi2">Keep copies of everything</span></span>
+          </div>
+        </div>
+
+        <div class="infoCard">
+          <b id="t_visaContactsTitle">Contacts (Demo)</b>
+          <ul id="t_visaContactsList">
+            <li>International Office Email: uniguide.demo@unn.ru</li>
+            <li>Office Hours: 09:00–17:00</li>
+            <li>Location: Student Affairs Building</li>
+          </ul>
+          <div class="kpiRow">
+            <span class="kpi"><span class="dot"></span><span id="t_visaKpi3">Ask early, avoid stress</span></span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="footer" id="t_footer2">
+    <div class="footer" id="t_footerVisa">
       © 2025 UniGuide — Visa Section (Demo). Content is simplified for student clarity.
     </div>
   </section>
 
+  <!-- MEDICAL -->
+  <section class="page" id="page-medical">
+    <div class="breadcrumbs">
+      <a href="javascript:void(0)" onclick="go('home');setActiveNav('home')" id="t_backHome2">← Back to Home</a>
+      <span>•</span>
+      <span id="t_medBreadcrumb">Medical Check-ups</span>
+    </div>
+
+    <div class="sectionHead">
+      <div>
+        <h3 id="t_medTitle">Medical Check-ups</h3>
+        <p id="t_medSub">A clear overview of common medical steps for new students.</p>
+      </div>
+    </div>
+
+    <div class="subgrid">
+      <div class="infoCard">
+        <b id="t_medWhatTitle">What you may need</b>
+        <ul id="t_medWhatList">
+          <li>Basic check-up or vaccination proof (if required).</li>
+          <li>Health insurance details (if applicable).</li>
+          <li>Clinic appointment confirmation.</li>
+        </ul>
+        <div class="kpiRow">
+          <span class="kpi"><span class="dot warn"></span><span id="t_medKpi1">Bring ID and papers</span></span>
+          <span class="kpi"><span class="dot"></span><span id="t_medKpi2">Keep scanned copies</span></span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <b id="t_medStepsTitle">Simple steps</b>
+        <ul id="t_medStepsList">
+          <li>Check if your faculty requires a medical certificate.</li>
+          <li>Book an appointment (university clinic or partner clinic).</li>
+          <li>Upload/save the result in your documents folder.</li>
+          <li>If you have questions, use AI Support.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer" id="t_footerMed">
+      © 2025 UniGuide — Medical Section (Demo).
+    </div>
+  </section>
+
+  <!-- COURSES -->
+  <section class="page" id="page-courses">
+    <div class="breadcrumbs">
+      <a href="javascript:void(0)" onclick="go('home');setActiveNav('home')" id="t_backHome3">← Back to Home</a>
+      <span>•</span>
+      <span id="t_courseBreadcrumb">Courses</span>
+    </div>
+
+    <div class="sectionHead">
+      <div>
+        <h3 id="t_courseTitle">Courses</h3>
+        <p id="t_courseSub">Register your courses and confirm your study plan.</p>
+      </div>
+    </div>
+
+    <div class="subgrid">
+      <div class="infoCard">
+        <b id="t_courseGuideTitle">Beginner guide</b>
+        <ul id="t_courseGuideList">
+          <li>Check your program curriculum (required vs elective courses).</li>
+          <li>Confirm credits and prerequisites.</li>
+          <li>Make a weekly schedule you can follow.</li>
+        </ul>
+        <div class="kpiRow">
+          <span class="kpi"><span class="dot"></span><span id="t_courseKpi1">Plan your week</span></span>
+          <span class="kpi"><span class="dot warn"></span><span id="t_courseKpi2">Watch registration deadline</span></span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <b id="t_courseExampleTitle">Example schedule (Demo)</b>
+        <div class="list" id="courseList">
+          <div class="rowItem">
+            <div>
+              <b>Calculus I</b>
+              <small>Mon/Wed 10:00 • Room B-204</small>
+            </div>
+            <span class="status">Registered</span>
+          </div>
+          <div class="rowItem">
+            <div>
+              <b>Academic English</b>
+              <small>Tue/Thu 12:00 • Room C-101</small>
+            </div>
+            <span class="status">Registered</span>
+          </div>
+          <div class="rowItem">
+            <div>
+              <b>Computer Science Basics</b>
+              <small>Fri 09:00 • Lab L-12</small>
+            </div>
+            <span class="status">Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer" id="t_footerCourses">© 2025 UniGuide — Courses Section (Demo).</div>
+  </section>
+
+  <!-- PENDING -->
+  <section class="page" id="page-pending">
+    <div class="breadcrumbs">
+      <a href="javascript:void(0)" onclick="go('home');setActiveNav('home')" id="t_backHome4">← Back to Home</a>
+      <span>•</span>
+      <span id="t_pendingBreadcrumb">Pending Orders</span>
+    </div>
+
+    <div class="sectionHead">
+      <div>
+        <h3 id="t_pendingTitle">Pending Orders</h3>
+        <p id="t_pendingSub">Track unfinished requests and avoid missing steps.</p>
+      </div>
+    </div>
+
+    <div class="subgrid">
+      <div class="infoCard">
+        <b id="t_pendingListTitle">Your current requests (Demo)</b>
+        <div class="list">
+          <div class="rowItem">
+            <div>
+              <b id="t_p1">Dormitory application</b>
+              <small id="t_p1s">Waiting for approval • Submitted: 2025-12-20</small>
+            </div>
+            <span class="status">Pending</span>
+          </div>
+          <div class="rowItem">
+            <div>
+              <b id="t_p2">Student card request</b>
+              <small id="t_p2s">Need photo upload • Created: 2025-12-22</small>
+            </div>
+            <span class="status">Action Needed</span>
+          </div>
+          <div class="rowItem">
+            <div>
+              <b id="t_p3">Course registration change</b>
+              <small id="t_p3s">Advisor review • Updated: 2025-12-23</small>
+            </div>
+            <span class="status">In Review</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <b id="t_pendingTipsTitle">Helpful tips</b>
+        <ul id="t_pendingTipsList">
+          <li>Open each request and check required documents.</li>
+          <li>If it says “Action Needed”, do it today.</li>
+          <li>Use AI Support if you don’t understand a requirement.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer" id="t_footerPending">© 2025 UniGuide — Pending Orders (Demo).</div>
+  </section>
+
+  <!-- RESIDENCE -->
+  <section class="page" id="page-residence">
+    <div class="breadcrumbs">
+      <a href="javascript:void(0)" onclick="go('home');setActiveNav('home')" id="t_backHome5">← Back to Home</a>
+      <span>•</span>
+      <span id="t_resBreadcrumb">University Residence</span>
+    </div>
+
+    <div class="sectionHead">
+      <div>
+        <h3 id="t_resTitle">University Residence</h3>
+        <p id="t_resSub">On-campus dorm information and check-in steps (demo).</p>
+      </div>
+    </div>
+
+    <div class="subgrid">
+      <div class="infoCard">
+        <b id="t_resStepsTitle">Check-in steps</b>
+        <ul id="t_resStepsList">
+          <li>Confirm your assignment and check-in date.</li>
+          <li>Prepare ID + acceptance + payment receipt (if any).</li>
+          <li>Read dorm rules (quiet hours, guest policy).</li>
+          <li>Report issues to the dorm supervisor.</li>
+        </ul>
+      </div>
+      <div class="infoCard">
+        <b id="t_resRulesTitle">Basic rules (example)</b>
+        <ul id="t_resRulesList">
+          <li>Keep your room clean and safe.</li>
+          <li>Respect quiet hours at night.</li>
+          <li>Guests must follow the dorm policy.</li>
+        </ul>
+        <div class="kpiRow">
+          <span class="kpi"><span class="dot"></span><span id="t_resKpi1">Safety first</span></span>
+          <span class="kpi"><span class="dot warn"></span><span id="t_resKpi2">Keep your documents ready</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer" id="t_footerRes">© 2025 UniGuide — Residence (Demo).</div>
+  </section>
+
+  <!-- HOUSING -->
+  <section class="page" id="page-housing">
+    <div class="breadcrumbs">
+      <a href="javascript:void(0)" onclick="go('home');setActiveNav('home')" id="t_backHome6">← Back to Home</a>
+      <span>•</span>
+      <span id="t_houseBreadcrumb">Student Housing</span>
+    </div>
+
+    <div class="sectionHead">
+      <div>
+        <h3 id="t_houseTitle">Student Housing</h3>
+        <p id="t_houseSub">Off-campus housing basics and a simple checklist.</p>
+      </div>
+    </div>
+
+    <div class="subgrid">
+      <div class="infoCard">
+        <b id="t_houseChecklistTitle">Checklist before renting</b>
+        <ul id="t_houseChecklistList">
+          <li>Ask about monthly rent + utilities.</li>
+          <li>Check contract terms and deposit rules.</li>
+          <li>Confirm internet and transport access.</li>
+          <li>Never pay without a clear agreement.</li>
+        </ul>
+        <div class="kpiRow">
+          <span class="kpi"><span class="dot bad"></span><span id="t_houseKpi1">Avoid scams</span></span>
+          <span class="kpi"><span class="dot"></span><span id="t_houseKpi2">Read the contract</span></span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <b id="t_houseExampleTitle">Example options (Demo)</b>
+        <div class="list">
+          <div class="rowItem">
+            <div>
+              <b id="t_h1">Shared apartment near campus</b>
+              <small id="t_h1s">Good for budget • 25–35 min by bus</small>
+            </div>
+            <span class="status">Info</span>
+          </div>
+          <div class="rowItem">
+            <div>
+              <b id="t_h2">Studio apartment (city center)</b>
+              <small id="t_h2s">More expensive • Faster transport</small>
+            </div>
+            <span class="status">Info</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer" id="t_footerHouse">© 2025 UniGuide — Housing (Demo).</div>
+  </section>
+
+</div>
+
+<!-- AI MODAL -->
+<div class="modalBackdrop" id="aiBackdrop" onclick="closeAiModal(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="AI Support" onclick="event.stopPropagation()">
+    <div class="modalHead">
+      <div id="t_aiModalTitle">AI Support (Demo)</div>
+      <button class="iconBtn" onclick="closeAiModal()" id="t_closeBtn">✕ Close</button>
+    </div>
+    <div class="modalBody">
+      <div class="note" id="t_aiModalNote">
+        This is a demo assistant. Ask simple questions like “What documents do I need for visa extension?” or “How do I register courses?”
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="chat" id="chatBox" aria-label="Chat messages"></div>
+
+      <div class="chatRow">
+        <input class="input" id="chatInput" placeholder="Type your question..." />
+        <button class="iconBtn" onclick="sendChat()" id="t_sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-  // --- Simple toast (no design focus, just clarity) ---
-  function toast(title){
-    alert("UniGuide (Demo)\n\n" + title + "\n\nThis button is a placeholder in this student project.");
-  }
-  function scrollToId(id){
-    document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"});
-  }
+  // ---------- Routing ----------
+  const pages = ["home","visa","medical","courses","pending","residence","housing"];
 
-  // --- Routing (home / visa) ---
   function go(page){
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById("page-" + page).classList.add("active");
-    window.location.hash = page;
-  }
-  // Hash support
-  const hash = (location.hash || "").replace("#","");
-  if(hash === "visa") go("visa");
-
-  // --- AI Support demo (simple) ---
-  function openAiSupport(){
-    alert(
-      "AI Support (Demo)\n\n" +
-      "Example question: What documents do I need for course registration?\n\n" +
-      "Example answer: Check your faculty requirements, passport/ID, and enrollment confirmation. If you are international, keep your visa documents ready.\n\n" +
-      "This demo uses placeholder responses."
-    );
+    pages.forEach(p=>{
+      const el = document.getElementById("page-"+p);
+      if(el) el.classList.toggle("active", p===page);
+    });
+    location.hash = page;
+    // scroll to top for "page feeling"
+    window.scrollTo({top:0, behavior:"smooth"});
   }
 
-  // --- Multi-language dictionary ---
+  function setActiveNav(page){
+    const map = {
+      home:"nav_home",
+      visa:"nav_visa",
+      medical:"nav_medical",
+      courses:"nav_courses",
+      pending:"nav_pending",
+      residence:"nav_residence",
+      housing:"nav_housing",
+    };
+    Object.values(map).forEach(id=>{
+      const a = document.getElementById(id);
+      if(a) a.classList.remove("active");
+    });
+    const activeId = map[page];
+    if(activeId) document.getElementById(activeId).classList.add("active");
+  }
+
+  // initial hash
+  const initial = (location.hash || "#home").replace("#","");
+  if(pages.includes(initial)){
+    go(initial);
+    setActiveNav(initial);
+  }
+
+  // ---------- Search filter (home cards) ----------
+  const searchBox = document.getElementById("searchBox");
+  searchBox.addEventListener("input", ()=>{
+    const q = searchBox.value.trim().toLowerCase();
+    const cards = document.querySelectorAll("#mainCards .card");
+    cards.forEach(c=>{
+      const text = (c.innerText + " " + (c.getAttribute("data-search")||"")).toLowerCase();
+      c.style.display = text.includes(q) ? "flex" : "none";
+    });
+  });
+
+  // ---------- Dark mode ----------
+  const DARK_KEY = "uniguide_dark";
+  function applyDark(on){
+    document.body.classList.toggle("dark", !!on);
+    localStorage.setItem(DARK_KEY, on ? "1" : "0");
+    // button label updates via language apply
+    applyLang(document.getElementById("langSelect").value);
+  }
+  function toggleDark(){
+    const on = !document.body.classList.contains("dark");
+    applyDark(on);
+  }
+  applyDark(localStorage.getItem(DARK_KEY)==="1");
+
+  // ---------- AI Support modal + demo chat ----------
+  const aiBackdrop = document.getElementById("aiBackdrop");
+  const chatBox = document.getElementById("chatBox");
+  const chatInput = document.getElementById("chatInput");
+
+  function openAiModal(){
+    aiBackdrop.style.display = "flex";
+    if(chatBox.childElementCount === 0){
+      addBotMsg(getText("aiHello"));
+      addBotMsg(getText("aiExamples"));
+    }
+    setTimeout(()=>chatInput.focus(), 50);
+  }
+  function closeAiModal(ev){
+    aiBackdrop.style.display = "none";
+  }
+  function addMsg(text, who="bot"){
+    const div = document.createElement("div");
+    div.className = "msg " + (who==="me" ? "me" : "bot");
+    div.textContent = text;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+  function addBotMsg(t){ addMsg(t,"bot"); }
+  function addMeMsg(t){ addMsg(t,"me"); }
+
+  function sendChat(){
+    const q = chatInput.value.trim();
+    if(!q) return;
+    addMeMsg(q);
+    chatInput.value = "";
+
+    // Simple rule-based demo answers
+    const low = q.toLowerCase();
+    let ans = getText("aiDefault");
+
+    if(low.includes("visa") && (low.includes("extend") || low.includes("extension") || low.includes("renew"))){
+      ans = getText("aiVisaExt");
+    } else if(low.includes("visa") && (low.includes("document") || low.includes("required"))){
+      ans = getText("aiVisaDocs");
+    } else if(low.includes("course") || low.includes("register") || low.includes("schedule")){
+      ans = getText("aiCourses");
+    } else if(low.includes("medical") || low.includes("check") || low.includes("insurance")){
+      ans = getText("aiMedical");
+    } else if(low.includes("dorm") || low.includes("residence") || low.includes("hostel")){
+      ans = getText("aiResidence");
+    } else if(low.includes("housing") || low.includes("rent") || low.includes("apartment")){
+      ans = getText("aiHousing");
+    } else if(low.includes("pending") || low.includes("request") || low.includes("order")){
+      ans = getText("aiPending");
+    }
+
+    setTimeout(()=>addBotMsg(ans), 450);
+  }
+
+  chatInput.addEventListener("keydown",(e)=>{
+    if(e.key==="Enter") sendChat();
+  });
+
+  // ---------- “Toast” replacement (placeholder pages) ----------
+  function toast(key){
+    // key is used for translated modal messages
+    alert(getText("placeholderTitle") + "\n\n" + getText(key) + "\n\n" + getText("placeholderNote"));
+  }
+
+  // ---------- Multi-language ----------
   const T = {
     en: {
-      dir: "ltr",
-      brandTitle: "UniGuide",
-      brandSub: "Lobachevsky University — New Student Guide",
-      studentName: "Student:",
-      studentId: "ID:",
-      dummyBadge: "Dummy Account",
-      homeTitle: "Welcome to UniGuide",
-      homeDesc: "UniGuide helps new students understand the most important university steps when joining Lobachevsky University. Choose a section below to see clear guidance.",
-      goVisaBtn: "Open Visa",
-      browseBtn: "Browse Sections",
-      quickTipsTitle: "Quick tips",
-      tip1: "Keep your documents organized (digital + paper).",
-      tip2: "Track deadlines and submit early.",
-      tip3: "If you are unsure, use AI Support for quick answers.",
-      sectionsTitle: "Main Sections",
-      sectionsSub: "Simple icons, clear steps, student-friendly wording.",
-      visa: "Visa",
-      visaDesc: "Visa services and guidance for international students.",
-      medical: "Medical Check-ups",
-      medicalDesc: "Health requirements, medical reports, and clinic steps.",
-      courses: "Courses",
-      coursesDesc: "Course registration, schedules, and study planning.",
-      pending: "Pending Orders",
-      pendingDesc: "Track unfinished requests (forms, approvals, tickets).",
-      residence: "University Residence",
-      residenceDesc: "On-campus dorm rules, check-in steps, and support.",
-      housing: "Student Housing",
-      housingDesc: "Off-campus housing basics and practical suggestions.",
-      ai: "AI Support",
-      aiDesc: "Ask support questions and get clear answers (demo).",
-      noteHome: "Note: This is a student project demo. The content uses dummy data and example steps for clarity.",
-      footer: "© 2025 UniGuide — Lobachevsky University (Demo Website). All data shown is placeholder.",
+      dir:"ltr",
+      brandTitle:"UniGuide",
+      brandSub:"Lobachevsky University — New Student Guide",
+      studentName:"Student:",
+      studentId:"ID:",
+      dummyBadge:"Dummy Account",
+      searchPh:"Search (Visa, Courses, Housing...)",
+      darkBtnDark:"🌙 Dark",
+      darkBtnLight:"☀️ Light",
+      aiTop:"🤖 AI Support",
 
-      backHome: "← Back to Home",
-      visaBreadcrumb: "Visa",
-      visaTitle: "Visa Services",
-      visaSub: "Choose a topic below for clear, student-friendly guidance.",
-      homeBtn: "Home",
-      visaExt: "Visa Extension",
-      visaExtDesc: "When and how to extend your student visa.",
-      reqDocs: "Required Documents",
-      reqDocsDesc: "Checklist of documents for visa procedures.",
-      invite: "University Invitation",
-      inviteDesc: "Request or download your invitation letter (if applicable).",
-      visaSupport: "Visa Support",
-      visaSupportDesc: "Where to ask for help and how to contact support.",
-      noteVisa: "Tip: Always check deadlines and keep copies of your documents. If you are unsure, contact the International Office.",
-      footer2: "© 2025 UniGuide — Visa Section (Demo). Content is simplified for student clarity."
+      nav_home:"Home",
+      nav_visa:"Visa",
+      nav_medical:"Medical",
+      nav_courses:"Courses",
+      nav_pending:"Pending",
+      nav_residence:"Residence",
+      nav_housing:"Housing",
+
+      homeTitle:"Welcome to UniGuide",
+      homeDesc:"UniGuide helps new students understand the most important university steps when joining Lobachevsky University. Choose a section below to see clear guidance.",
+      homeNote:"This is a student project demo. All data is placeholder and written in a student-friendly style.",
+      quickTitle:"Quick Checklist",
+      quick1:"Prepare your key documents (passport/ID, enrollment confirmation).",
+      quick2:"Complete required medical check-ups if needed.",
+      quick3:"Register courses and confirm your schedule.",
+      quick4:"Check housing/residence options early.",
+      sectionsTitle:"Main Sections",
+      sectionsSub:"Simple icons, clean layout, and clear steps.",
+
+      visa:"Visa", visaDesc:"Visa services and guidance for international students.",
+      medical:"Medical Check-ups", medicalDesc:"Health requirements, medical reports, and clinic steps.",
+      courses:"Courses", coursesDesc:"Course registration, schedules, and study planning.",
+      pending:"Pending Orders", pendingDesc:"Track unfinished requests (forms, approvals, tickets).",
+      residence:"University Residence", residenceDesc:"On-campus dorm rules, check-in steps, and support.",
+      housing:"Student Housing", housingDesc:"Off-campus housing basics and practical suggestions.",
+      ai:"AI Support", aiDesc:"Ask support questions and get clear answers (demo chat).",
+
+      noteHome2:"Tip: Use the search box at the top to quickly find a section (e.g., \"visa\", \"housing\", \"courses\").",
+      footerHome:"© 2025 UniGuide — Lobachevsky University (Demo Website). All data shown is placeholder.",
+
+      backHome:"← Back to Home",
+      backHome2:"← Back to Home",
+      backHome3:"← Back to Home",
+      backHome4:"← Back to Home",
+      backHome5:"← Back to Home",
+      backHome6:"← Back to Home",
+
+      visaBreadcrumb:"Visa",
+      visaTitle:"Visa Services",
+      visaSub:"Choose a topic below for clear, student-friendly guidance.",
+      visaExt:"Visa Extension",
+      visaExtDesc:"When and how to extend your student visa.",
+      reqDocs:"Required Documents",
+      reqDocsDesc:"Checklist of documents for visa procedures.",
+      invite:"University Invitation",
+      inviteDesc:"Request or download your invitation letter (if applicable).",
+      visaSupport:"Visa Support",
+      visaSupportDesc:"Where to ask for help and how to contact support.",
+
+      visaStepsTitle:"Recommended Steps (Simple)",
+      visaContactsTitle:"Contacts (Demo)",
+      visaKpi1:"Start 30 days before expiry",
+      visaKpi2:"Keep copies of everything",
+      visaKpi3:"Ask early, avoid stress",
+      footerVisa:"© 2025 UniGuide — Visa Section (Demo). Content is simplified for student clarity.",
+
+      medBreadcrumb:"Medical Check-ups",
+      medTitle:"Medical Check-ups",
+      medSub:"A clear overview of common medical steps for new students.",
+      medWhatTitle:"What you may need",
+      medStepsTitle:"Simple steps",
+      medKpi1:"Bring ID and papers",
+      medKpi2:"Keep scanned copies",
+      footerMed:"© 2025 UniGuide — Medical Section (Demo).",
+
+      courseBreadcrumb:"Courses",
+      courseTitle:"Courses",
+      courseSub:"Register your courses and confirm your study plan.",
+      courseGuideTitle:"Beginner guide",
+      courseExampleTitle:"Example schedule (Demo)",
+      courseKpi1:"Plan your week",
+      courseKpi2:"Watch registration deadline",
+      footerCourses:"© 2025 UniGuide — Courses Section (Demo).",
+
+      pendingBreadcrumb:"Pending Orders",
+      pendingTitle:"Pending Orders",
+      pendingSub:"Track unfinished requests and avoid missing steps.",
+      pendingListTitle:"Your current requests (Demo)",
+      pendingTipsTitle:"Helpful tips",
+      footerPending:"© 2025 UniGuide — Pending Orders (Demo).",
+
+      resBreadcrumb:"University Residence",
+      resTitle:"University Residence",
+      resSub:"On-campus dorm information and check-in steps (demo).",
+      resStepsTitle:"Check-in steps",
+      resRulesTitle:"Basic rules (example)",
+      resKpi1:"Safety first",
+      resKpi2:"Keep your documents ready",
+      footerRes:"© 2025 UniGuide — Residence (Demo).",
+
+      houseBreadcrumb:"Student Housing",
+      houseTitle:"Student Housing",
+      houseSub:"Off-campus housing basics and a simple checklist.",
+      houseChecklistTitle:"Checklist before renting",
+      houseExampleTitle:"Example options (Demo)",
+      houseKpi1:"Avoid scams",
+      houseKpi2:"Read the contract",
+      footerHouse:"© 2025 UniGuide — Housing (Demo).",
+
+      // AI Modal
+      aiModalTitle:"AI Support (Demo)",
+      closeBtn:"✕ Close",
+      sendBtn:"Send",
+      aiModalNote:"This is a demo assistant. Ask simple questions like “What documents do I need for visa extension?” or “How do I register courses?”",
+      aiHello:"Hi! I’m UniGuide AI Support (demo). How can I help you today?",
+      aiExamples:"Examples: visa extension • required documents • course registration • dorm check-in • housing checklist.",
+      aiDefault:"I can help with visa, medical, courses, pending requests, residence, and housing. Try asking with a keyword.",
+      aiVisaExt:"For visa extension: check your expiry date, prepare passport copies + registration, and contact the International Office early. Start ~30 days before expiry.",
+      aiVisaDocs:"Common visa documents: passport copy, migration card, registration, invitation/confirmation (if needed), and application forms. Keep digital copies.",
+      aiCourses:"For courses: check your curriculum, register required courses first, confirm credits/prerequisites, then build a weekly timetable you can follow.",
+      aiMedical:"Medical steps: check faculty requirements, book a clinic appointment, bring ID/insurance documents, and keep a digital scan of the result.",
+      aiResidence:"Residence: confirm your check-in date, bring ID + acceptance/payment receipt, review dorm rules, and contact dorm staff for issues.",
+      aiHousing:"Housing: verify rent + utilities, read the contract carefully, avoid paying without agreement, and confirm transport/internet access.",
+      aiPending:"Pending requests: open each request, check missing documents, handle “Action Needed” first, and contact the office if it stays pending too long.",
+
+      // Placeholder alert
+      placeholderTitle:"UniGuide (Demo)",
+      placeholderNote:"This button is a placeholder for the project. In a full system, it would open a detailed page with forms and official links."
     },
 
-    ar: {
-      dir: "rtl",
-      brandTitle: "UniGuide",
-      brandSub: "جامعة لوباتشيفسكي — دليل الطالب الجديد",
-      studentName: "الطالب:",
-      studentId: "الرقم:",
-      dummyBadge: "حساب تجريبي",
-      homeTitle: "مرحبًا بك في UniGuide",
-      homeDesc: "يساعد UniGuide الطلاب الجدد على فهم أهم خطوات الجامعة عند الانضمام إلى جامعة لوباتشيفسكي. اختر قسمًا لعرض إرشادات واضحة.",
-      goVisaBtn: "قسم التأشيرة",
-      browseBtn: "تصفح الأقسام",
-      quickTipsTitle: "نصائح سريعة",
-      tip1: "احتفظ بملفاتك منظمة (ورقيًا ورقميًا).",
-      tip2: "تابع المواعيد النهائية وقدّم مبكرًا.",
-      tip3: "إذا كنت غير متأكد، استخدم دعم الذكاء الاصطناعي.",
-      sectionsTitle: "الأقسام الرئيسية",
-      sectionsSub: "أيقونات بسيطة وخطوات واضحة وبأسلوب مناسب للطلاب.",
-      visa: "التأشيرة",
-      visaDesc: "خدمات وإرشادات التأشيرة للطلاب الدوليين.",
-      medical: "الفحوصات الطبية",
-      medicalDesc: "متطلبات الصحة والتقارير الطبية والخطوات.",
-      courses: "المقررات",
-      coursesDesc: "تسجيل المقررات والجداول وتنظيم الدراسة.",
-      pending: "طلبات معلّقة",
-      pendingDesc: "تتبّع الطلبات غير المكتملة (نماذج، موافقات).",
-      residence: "سكن الجامعة",
-      residenceDesc: "قواعد السكن داخل الجامعة وخطوات السكن والدعم.",
-      housing: "سكن الطلاب",
-      housingDesc: "أساسيات السكن خارج الجامعة ونصائح عملية.",
-      ai: "دعم الذكاء الاصطناعي",
-      aiDesc: "اسأل أسئلة الدعم واحصل على إجابات واضحة (تجريبي).",
-      noteHome: "ملاحظة: هذا نموذج لمشروع طلابي ويستخدم بيانات وأمثلة وهمية للوضوح.",
-      footer: "© 2025 UniGuide — جامعة لوباتشيفسكي (موقع تجريبي). جميع البيانات المعروضة وهمية.",
-
-      backHome: "← العودة للرئيسية",
-      visaBreadcrumb: "التأشيرة",
-      visaTitle: "خدمات التأشيرة",
-      visaSub: "اختر موضوعًا لعرض إرشادات واضحة وبأسلوب مناسب للطلاب.",
-      homeBtn: "الرئيسية",
-      visaExt: "تمديد التأشيرة",
-      visaExtDesc: "متى وكيف تمدد تأشيرة الطالب.",
-      reqDocs: "المستندات المطلوبة",
-      reqDocsDesc: "قائمة المستندات اللازمة لإجراءات التأشيرة.",
-      invite: "دعوة الجامعة",
-      inviteDesc: "طلب أو تنزيل خطاب الدعوة (إن وُجد).",
-      visaSupport: "دعم التأشيرة",
-      visaSupportDesc: "أين تطلب المساعدة وكيف تتواصل مع الدعم.",
-      noteVisa: "نصيحة: تحقق دائمًا من المواعيد النهائية واحتفظ بنسخ من مستنداتك. إذا كنت غير متأكد، تواصل مع مكتب الطلاب الدوليين.",
-      footer2: "© 2025 UniGuide — قسم التأشيرة (تجريبي). المحتوى مبسّط لتوضيح الخطوات."
-    },
-
-    zh: {
-      dir: "ltr",
-      brandTitle: "UniGuide",
-      brandSub: "洛巴切夫斯基大学 — 新生指南",
-      studentName: "学生：",
-      studentId: "学号：",
-      dummyBadge: "演示账户",
-      homeTitle: "欢迎使用 UniGuide",
-      homeDesc: "UniGuide 帮助新生了解加入洛巴切夫斯基大学时最重要的步骤。请选择下方模块查看清晰指导。",
-      goVisaBtn: "签证模块",
-      browseBtn: "浏览模块",
-      quickTipsTitle: "快速提示",
-      tip1: "整理好你的文件（电子版+纸质版）。",
-      tip2: "关注截止日期并尽早提交。",
-      tip3: "不确定时可使用 AI 支持获取快速解答。",
-      sectionsTitle: "主要模块",
-      sectionsSub: "图标简洁、步骤清晰、文字友好。",
-      visa: "签证",
-      visaDesc: "国际学生签证相关服务与指导。",
-      medical: "体检",
-      medicalDesc: "健康要求、体检报告与流程。",
-      courses: "课程",
-      coursesDesc: "选课、课表与学习规划。",
-      pending: "待处理事项",
-      pendingDesc: "跟踪未完成的申请（表格、审批等）。",
-      residence: "校内宿舍",
-      residenceDesc: "宿舍规则、入住步骤与支持。",
-      housing: "校外住房",
-      housingDesc: "校外住房基础信息与建议。",
-      ai: "AI 支持",
-      aiDesc: "提问并获得清晰回答（演示）。",
-      noteHome: "说明：这是学生项目演示，使用虚拟数据与示例步骤。",
-      footer: "© 2025 UniGuide — 洛巴切夫斯基大学（演示网站）。所有数据为占位符。",
-
-      backHome: "← 返回首页",
-      visaBreadcrumb: "签证",
-      visaTitle: "签证服务",
-      visaSub: "请选择主题，查看清晰、友好的指导。",
-      homeBtn: "首页",
-      visaExt: "签证延期",
-      visaExtDesc: "何时以及如何办理学生签证延期。",
-      reqDocs: "所需材料",
-      reqDocsDesc: "签证流程所需材料清单。",
-      invite: "大学邀请函",
-      inviteDesc: "申请或下载邀请函（如适用）。",
-      visaSupport: "签证支持",
-      visaSupportDesc: "如何联系支持并获得帮助。",
-      noteVisa: "提示：请务必核对截止日期并保留文件副本。如不确定，请联系国际学生办公室。",
-      footer2: "© 2025 UniGuide — 签证模块（演示）。内容为清晰起见已简化。"
-    },
-
-    es: {
-      dir: "ltr",
-      brandTitle: "UniGuide",
-      brandSub: "Universidad Lobachevsky — Guía para nuevos estudiantes",
-      studentName: "Estudiante:",
-      studentId: "ID:",
-      dummyBadge: "Cuenta de prueba",
-      homeTitle: "Bienvenido a UniGuide",
-      homeDesc: "UniGuide ayuda a los nuevos estudiantes a comprender los pasos universitarios más importantes al unirse a la Universidad Lobachevsky. Elige una sección para ver una guía clara.",
-      goVisaBtn: "Abrir Visa",
-      browseBtn: "Ver secciones",
-      quickTipsTitle: "Consejos rápidos",
-      tip1: "Organiza tus documentos (digital + papel).",
-      tip2: "Sigue las fechas límite y entrega con tiempo.",
-      tip3: "Si tienes dudas, usa AI Support para respuestas rápidas.",
-      sectionsTitle: "Secciones principales",
-      sectionsSub: "Iconos simples, pasos claros y lenguaje amigable.",
-      visa: "Visa",
-      visaDesc: "Servicios y guía de visado para estudiantes internacionales.",
-      medical: "Revisiones médicas",
-      medicalDesc: "Requisitos de salud, informes médicos y pasos.",
-      courses: "Cursos",
-      coursesDesc: "Inscripción, horarios y planificación de estudio.",
-      pending: "Pendientes",
-      pendingDesc: "Seguimiento de solicitudes incompletas (formularios, aprobaciones).",
-      residence: "Residencia universitaria",
-      residenceDesc: "Reglas del dormitorio, registro y soporte.",
-      housing: "Alojamiento estudiantil",
-      housingDesc: "Información básica sobre alojamiento fuera del campus.",
-      ai: "Soporte de IA",
-      aiDesc: "Haz preguntas y obtén respuestas claras (demo).",
-      noteHome: "Nota: Esta es una demo de proyecto estudiantil. El contenido usa datos y pasos de ejemplo.",
-      footer: "© 2025 UniGuide — Universidad Lobachevsky (Demo). Todos los datos son de ejemplo.",
-
-      backHome: "← Volver al inicio",
-      visaBreadcrumb: "Visa",
-      visaTitle: "Servicios de Visa",
-      visaSub: "Elige un tema para ver una guía clara y amigable.",
-      homeBtn: "Inicio",
-      visaExt: "Extensión de Visa",
-      visaExtDesc: "Cuándo y cómo extender tu visa de estudiante.",
-      reqDocs: "Documentos requeridos",
-      reqDocsDesc: "Lista de documentos para los trámites de visa.",
-      invite: "Invitación de la universidad",
-      inviteDesc: "Solicita o descarga tu carta de invitación (si aplica).",
-      visaSupport: "Soporte de Visa",
-      visaSupportDesc: "Dónde pedir ayuda y cómo contactar soporte.",
-      noteVisa: "Consejo: Revisa las fechas límite y guarda copias de tus documentos. Si no estás seguro, contacta a la Oficina Internacional.",
-      footer2: "© 2025 UniGuide — Sección Visa (Demo). Contenido simplificado para claridad."
-    },
-
-    ru: {
-      dir: "ltr",
-      brandTitle: "UniGuide",
-      brandSub: "Университет Лобачевского — путеводитель для первокурсников",
-      studentName: "Студент:",
-      studentId: "ID:",
-      dummyBadge: "Демо-аккаунт",
-      homeTitle: "Добро пожаловать в UniGuide",
-      homeDesc: "UniGuide помогает новым студентам понять самые важные шаги при поступлении в Университет Лобачевского. Выберите раздел ниже для понятных инструкций.",
-      goVisaBtn: "Открыть Визу",
-      browseBtn: "Разделы",
-      quickTipsTitle: "Быстрые советы",
-      tip1: "Храните документы организованно (цифровые + бумажные).",
-      tip2: "Следите за дедлайнами и сдавайте заранее.",
-      tip3: "Если сомневаетесь — используйте AI Support для быстрых ответов.",
-      sectionsTitle: "Основные разделы",
-      sectionsSub: "Простые иконки, понятные шаги, дружелюбный текст.",
-      visa: "Виза",
-      visaDesc: "Визовые услуги и помощь для иностранных студентов.",
-      medical: "Медосмотр",
-      medicalDesc: "Требования по здоровью, справки и шаги.",
-      courses: "Курсы",
-      coursesDesc: "Регистрация, расписание и планирование обучения.",
-      pending: "Незавершённые заявки",
-      pendingDesc: "Отслеживайте незаконченные запросы (формы, согласования).",
-      residence: "Общежитие университета",
-      residenceDesc: "Правила, заселение и поддержка в общежитии.",
-      housing: "Жильё для студентов",
-      housingDesc: "Варианты жилья вне кампуса и практические советы.",
-      ai: "AI Поддержка",
-      aiDesc: "Задавайте вопросы и получайте ответы (демо).",
-      noteHome: "Примечание: это демо студенческого проекта. Используются примерные шаги и фиктивные данные.",
-      footer: "© 2025 UniGuide — Университет Лобачевского (Демо-сайт). Все данные являются примером.",
-
-      backHome: "← Назад на главную",
-      visaBreadcrumb: "Виза",
-      visaTitle: "Визовые услуги",
-      visaSub: "Выберите тему ниже для понятных инструкций.",
-      homeBtn: "Главная",
-      visaExt: "Продление визы",
-      visaExtDesc: "Когда и как продлить студенческую визу.",
-      reqDocs: "Необходимые документы",
-      reqDocsDesc: "Список документов для визовых процедур.",
-      invite: "Приглашение от университета",
-      inviteDesc: "Запрос или скачивание приглашения (если применимо).",
-      visaSupport: "Визовая поддержка",
-      visaSupportDesc: "Куда обращаться за помощью и как связаться с поддержкой.",
-      noteVisa: "Совет: всегда проверяйте дедлайны и храните копии документов. Если не уверены — обратитесь в международный отдел.",
-      footer2: "© 2025 UniGuide — Раздел Виза (Демо). Контент упрощён для ясности."
-    }
+    // For other languages: keep the site working.
+    // If you want, I can fully translate EVERY new line later.
+    ar: { ...this?.T?.en }, // will be overridden below safely
+    zh: { ...this?.T?.en },
+    es: { ...this?.T?.en },
+    ru: { ...this?.T?.en },
   };
 
-  function setText(id, value){ const el = document.getElementById(id); if(el) el.textContent = value; }
+  // Properly clone EN for other languages, then override key strings for better feel
+  function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
+  T.ar = clone(T.en);
+  T.zh = clone(T.en);
+  T.es = clone(T.en);
+  T.ru = clone(T.en);
+
+  // Minimal but useful overrides (so language change is meaningful + readable)
+  T.ar.dir="rtl";
+  T.ar.brandSub="جامعة لوباتشيفسكي — دليل الطالب الجديد";
+  T.ar.nav_home="الرئيسية"; T.ar.nav_visa="التأشيرة"; T.ar.nav_medical="الطب"; T.ar.nav_courses="المقررات"; T.ar.nav_pending="طلبات"; T.ar.nav_residence="السكن"; T.ar.nav_housing="السكن الخارجي";
+  T.ar.homeTitle="مرحبًا بك في UniGuide";
+  T.ar.aiModalTitle="دعم الذكاء الاصطناعي (تجريبي)";
+  T.ar.closeBtn="✕ إغلاق"; T.ar.sendBtn="إرسال";
+  T.ar.searchPh="بحث (تأشيرة، مقررات، سكن...)";
+  T.ar.darkBtnDark="🌙 داكن"; T.ar.darkBtnLight="☀️ فاتح";
+
+  T.zh.brandSub="洛巴切夫斯基大学 — 新生指南";
+  T.zh.nav_home="首页"; T.zh.nav_visa="签证"; T.zh.nav_medical="体检"; T.zh.nav_courses="课程"; T.zh.nav_pending="待办"; T.zh.nav_residence="宿舍"; T.zh.nav_housing="住房";
+  T.zh.homeTitle="欢迎使用 UniGuide";
+  T.zh.aiModalTitle="AI 支持（演示）";
+  T.zh.closeBtn="✕ 关闭"; T.zh.sendBtn="发送";
+  T.zh.searchPh="搜索（签证、课程、住房…）";
+  T.zh.darkBtnDark="🌙 深色"; T.zh.darkBtnLight="☀️ 浅色";
+
+  T.es.brandSub="Universidad Lobachevsky — Guía para nuevos estudiantes";
+  T.es.nav_home="Inicio"; T.es.nav_visa="Visa"; T.es.nav_medical="Médico"; T.es.nav_courses="Cursos"; T.es.nav_pending="Pendientes"; T.es.nav_residence="Residencia"; T.es.nav_housing="Vivienda";
+  T.es.homeTitle="Bienvenido a UniGuide";
+  T.es.aiModalTitle="Soporte de IA (Demo)";
+  T.es.closeBtn="✕ Cerrar"; T.es.sendBtn="Enviar";
+  T.es.searchPh="Buscar (Visa, Cursos, Vivienda...)";
+  T.es.darkBtnDark="🌙 Oscuro"; T.es.darkBtnLight="☀️ Claro";
+
+  T.ru.brandSub="Университет Лобачевского — путеводитель для первокурсников";
+  T.ru.nav_home="Главная"; T.ru.nav_visa="Виза"; T.ru.nav_medical="Мед"; T.ru.nav_courses="Курсы"; T.ru.nav_pending="Заявки"; T.ru.nav_residence="Общежитие"; T.ru.nav_housing="Жильё";
+  T.ru.homeTitle="Добро пожаловать в UniGuide";
+  T.ru.aiModalTitle="AI Поддержка (Демо)";
+  T.ru.closeBtn="✕ Закрыть"; T.ru.sendBtn="Отправить";
+  T.ru.searchPh="Поиск (виза, курсы, жильё...)";
+  T.ru.darkBtnDark="🌙 Тёмная"; T.ru.darkBtnLight="☀️ Светлая";
+
+  function getText(key){
+    const lang = document.getElementById("langSelect").value;
+    const d = T[lang] || T.en;
+    return (d && d[key]) ? d[key] : (T.en[key] || key);
+  }
+
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(el) el.textContent = value;
+  }
 
   function applyLang(lang){
     const d = T[lang] || T.en;
-
-    // direction
     document.documentElement.setAttribute("dir", d.dir || "ltr");
     document.documentElement.lang = lang;
 
@@ -728,63 +1241,149 @@
     setText("t_studentName", d.studentName);
     setText("t_studentId", d.studentId);
     setText("t_dummyBadge", d.dummyBadge);
+    document.getElementById("searchBox").placeholder = d.searchPh;
+
+    // dark button text depends on state
+    const isDark = document.body.classList.contains("dark");
+    setText("t_darkBtn", isDark ? d.darkBtnLight : d.darkBtnDark);
+    setText("t_aiBtnTop", d.aiTop);
+
+    // nav
+    setText("nav_home", d.nav_home);
+    setText("nav_visa", d.nav_visa);
+    setText("nav_medical", d.nav_medical);
+    setText("nav_courses", d.nav_courses);
+    setText("nav_pending", d.nav_pending);
+    setText("nav_residence", d.nav_residence);
+    setText("nav_housing", d.nav_housing);
 
     // home
     setText("t_homeTitle", d.homeTitle);
     setText("t_homeDesc", d.homeDesc);
-    setText("t_goVisaBtn", d.goVisaBtn);
-    setText("t_browseBtn", d.browseBtn);
-    setText("t_quickTipsTitle", d.quickTipsTitle);
-    setText("t_tip1", d.tip1);
-    setText("t_tip2", d.tip2);
-    setText("t_tip3", d.tip3);
+    setText("t_homeNote", d.homeNote);
+    setText("t_quickTitle", d.quickTitle);
+    setText("t_quick1", d.quick1);
+    setText("t_quick2", d.quick2);
+    setText("t_quick3", d.quick3);
+    setText("t_quick4", d.quick4);
     setText("t_sectionsTitle", d.sectionsTitle);
     setText("t_sectionsSub", d.sectionsSub);
-    setText("t_visa", d.visa);
-    setText("t_visaDesc", d.visaDesc);
-    setText("t_medical", d.medical);
-    setText("t_medicalDesc", d.medicalDesc);
-    setText("t_courses", d.courses);
-    setText("t_coursesDesc", d.coursesDesc);
-    setText("t_pending", d.pending);
-    setText("t_pendingDesc", d.pendingDesc);
-    setText("t_residence", d.residence);
-    setText("t_residenceDesc", d.residenceDesc);
-    setText("t_housing", d.housing);
-    setText("t_housingDesc", d.housingDesc);
-    setText("t_ai", d.ai);
-    setText("t_aiDesc", d.aiDesc);
-    setText("t_noteHome", d.noteHome);
-    setText("t_footer", d.footer);
+
+    setText("t_visa", d.visa); setText("t_visaDesc", d.visaDesc);
+    setText("t_medical", d.medical); setText("t_medicalDesc", d.medicalDesc);
+    setText("t_courses", d.courses); setText("t_coursesDesc", d.coursesDesc);
+    setText("t_pending", d.pending); setText("t_pendingDesc", d.pendingDesc);
+    setText("t_residence", d.residence); setText("t_residenceDesc", d.residenceDesc);
+    setText("t_housing", d.housing); setText("t_housingDesc", d.housingDesc);
+    setText("t_ai", d.ai); setText("t_aiDesc", d.aiDesc);
+
+    setText("t_noteHome2", d.noteHome2);
+    setText("t_footerHome", d.footerHome);
 
     // visa page
     setText("t_backHome", d.backHome);
     setText("t_visaBreadcrumb", d.visaBreadcrumb);
     setText("t_visaTitle", d.visaTitle);
     setText("t_visaSub", d.visaSub);
-    setText("t_homeBtn", d.homeBtn);
-    setText("t_visaExt", d.visaExt);
-    setText("t_visaExtDesc", d.visaExtDesc);
-    setText("t_reqDocs", d.reqDocs);
-    setText("t_reqDocsDesc", d.reqDocsDesc);
-    setText("t_invite", d.invite);
-    setText("t_inviteDesc", d.inviteDesc);
-    setText("t_visaSupport", d.visaSupport);
-    setText("t_visaSupportDesc", d.visaSupportDesc);
-    setText("t_noteVisa", d.noteVisa);
-    setText("t_footer2", d.footer2);
 
-    // store
+    setText("t_visaExt", d.visaExt); setText("t_visaExtDesc", d.visaExtDesc);
+    setText("t_reqDocs", d.reqDocs); setText("t_reqDocsDesc", d.reqDocsDesc);
+    setText("t_invite", d.invite); setText("t_inviteDesc", d.inviteDesc);
+    setText("t_visaSupport", d.visaSupport); setText("t_visaSupportDesc", d.visaSupportDesc);
+
+    setText("t_visaStepsTitle", d.visaStepsTitle);
+    setText("t_visaContactsTitle", d.visaContactsTitle);
+    setText("t_visaKpi1", d.visaKpi1);
+    setText("t_visaKpi2", d.visaKpi2);
+    setText("t_visaKpi3", d.visaKpi3);
+    setText("t_footerVisa", d.footerVisa);
+
+    // other pages headings
+    setText("t_backHome2", d.backHome2);
+    setText("t_medBreadcrumb", d.medBreadcrumb);
+    setText("t_medTitle", d.medTitle);
+    setText("t_medSub", d.medSub);
+    setText("t_medWhatTitle", d.medWhatTitle);
+    setText("t_medStepsTitle", d.medStepsTitle);
+    setText("t_medKpi1", d.medKpi1);
+    setText("t_medKpi2", d.medKpi2);
+    setText("t_footerMed", d.footerMed);
+
+    setText("t_backHome3", d.backHome3);
+    setText("t_courseBreadcrumb", d.courseBreadcrumb);
+    setText("t_courseTitle", d.courseTitle);
+    setText("t_courseSub", d.courseSub);
+    setText("t_courseGuideTitle", d.courseGuideTitle);
+    setText("t_courseExampleTitle", d.courseExampleTitle);
+    setText("t_courseKpi1", d.courseKpi1);
+    setText("t_courseKpi2", d.courseKpi2);
+    setText("t_footerCourses", d.footerCourses);
+
+    setText("t_backHome4", d.backHome4);
+    setText("t_pendingBreadcrumb", d.pendingBreadcrumb);
+    setText("t_pendingTitle", d.pendingTitle);
+    setText("t_pendingSub", d.pendingSub);
+    setText("t_pendingListTitle", d.pendingListTitle);
+    setText("t_pendingTipsTitle", d.pendingTipsTitle);
+    setText("t_footerPending", d.footerPending);
+
+    setText("t_backHome5", d.backHome5);
+    setText("t_resBreadcrumb", d.resBreadcrumb);
+    setText("t_resTitle", d.resTitle);
+    setText("t_resSub", d.resSub);
+    setText("t_resStepsTitle", d.resStepsTitle);
+    setText("t_resRulesTitle", d.resRulesTitle);
+    setText("t_resKpi1", d.resKpi1);
+    setText("t_resKpi2", d.resKpi2);
+    setText("t_footerRes", d.footerRes);
+
+    setText("t_backHome6", d.backHome6);
+    setText("t_houseBreadcrumb", d.houseBreadcrumb);
+    setText("t_houseTitle", d.houseTitle);
+    setText("t_houseSub", d.houseSub);
+    setText("t_houseChecklistTitle", d.houseChecklistTitle);
+    setText("t_houseExampleTitle", d.houseExampleTitle);
+    setText("t_houseKpi1", d.houseKpi1);
+    setText("t_houseKpi2", d.houseKpi2);
+    setText("t_footerHouse", d.footerHouse);
+
+    // AI modal
+    setText("t_aiModalTitle", d.aiModalTitle);
+    setText("t_closeBtn", d.closeBtn);
+    setText("t_sendBtn", d.sendBtn);
+    setText("t_aiModalNote", d.aiModalNote);
+    document.getElementById("chatInput").placeholder = "Type your question..."; // keep simple
+
     localStorage.setItem("uniguide_lang", lang);
   }
 
   // init language
-  const saved = localStorage.getItem("uniguide_lang") || "en";
-  document.getElementById("langSelect").value = saved;
-  applyLang(saved);
+  const savedLang = localStorage.getItem("uniguide_lang") || "en";
+  document.getElementById("langSelect").value = savedLang;
+  applyLang(savedLang);
 
   document.getElementById("langSelect").addEventListener("change", (e)=>{
     applyLang(e.target.value);
+  });
+
+  // update labels when toggling theme
+  function toggleDark(){
+    const on = !document.body.classList.contains("dark");
+    applyDark(on);
+  }
+
+  // AI modal close via ESC
+  document.addEventListener("keydown",(e)=>{
+    if(e.key==="Escape" && aiBackdrop.style.display==="flex") closeAiModal();
+  });
+
+  // make sure clicking hash updates nav state
+  window.addEventListener("hashchange", ()=>{
+    const h = (location.hash || "#home").replace("#","");
+    if(pages.includes(h)){
+      go(h);
+      setActiveNav(h);
+    }
   });
 </script>
 </body>
