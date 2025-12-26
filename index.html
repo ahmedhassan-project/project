@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UniGuide — LSUNN Student Assistant</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#111a33; --panel2:#0f1730; --card:#121d3a;
+      --text:#e9eefc; --muted:#a9b6df; --line:#26325c;
+      --accent:#7c3aed; --accent2:#22c55e; --accent3:#f59e0b;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    body.light{
+      --bg:#f6f8ff; --panel:#ffffff; --panel2:#f1f5ff; --card:#ffffff;
+      --text:#0f172a; --muted:#475569; --line:#dbe3ff;
+      --accent:#6d28d9; --accent2:#16a34a; --accent3:#f59e0b;
+      --shadow: 0 18px 50px rgba(2,6,23,.12);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 15% 10%, rgba(124,58,237,.25), transparent 60%),
+                  radial-gradient(900px 550px at 90% 20%, rgba(34,197,94,.18), transparent 55%),
+                  radial-gradient(900px 700px at 30% 100%, rgba(245,158,11,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      transition:.25s;
+    }
+    a{color:inherit;text-decoration:none}
+
+    .app{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      min-height:100vh;
+    }
+
+    /* Sidebar */
+    .side{
+      position:sticky; top:0; height:100vh;
+      padding:18px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 85%, transparent), var(--panel2));
+      border-right: 1px solid var(--line);
+      overflow:auto;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+      padding:10px 10px 16px;
+    }
+    .mark{
+      width:46px;height:46px;border-radius:16px;
+      background: conic-gradient(from 220deg, var(--accent), #3b82f6, var(--accent2), var(--accent));
+      box-shadow: var(--shadow);
+    }
+    .brand h1{
+      margin:0; font-size:16px; line-height:1.1; letter-spacing:.2px;
+    }
+    .brand p{margin:4px 0 0; font-size:12px; color:var(--muted); font-weight:650}
+
+    .nav{
+      display:flex; flex-direction:column; gap:8px;
+      padding:6px 10px;
+    }
+    .nav a{
+      padding:10px 12px; border-radius:14px;
+      border:1px solid transparent;
+      background: transparent;
+      font-weight:800; font-size:13px;
+      display:flex; align-items:center; gap:10px;
+      color: color-mix(in srgb, var(--text) 86%, var(--muted));
+    }
+    .nav a:hover{
+      border-color: var(--line);
+      background: color-mix(in srgb, var(--card) 55%, transparent);
+    }
+    .nav a.active{
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent);
+      border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+      color: var(--text);
+    }
+    .ico{width:18px;height:18px;display:inline-grid;place-items:center}
+    .sideCard{
+      margin:14px 10px 0;
+      padding:14px;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--card) 70%, transparent);
+      border:1px solid var(--line);
+    }
+    .sideCard b{display:block}
+    .sideCard small{display:block;color:var(--muted);line-height:1.5;margin-top:6px;font-weight:650}
+
+    .sideBtnRow{
+      display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;
+    }
+    .btn{
+      border:none; cursor:pointer;
+      padding:10px 12px; border-radius:14px;
+      font-weight:900;
+      background: var(--accent);
+      color:white;
+      box-shadow: var(--shadow);
+    }
+    .btn.secondary{
+      background: transparent;
+      border:1px solid var(--line);
+      color:var(--text);
+      box-shadow:none;
+    }
+    .pill{
+      margin-top:10px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      background: color-mix(in srgb, var(--card) 80%, transparent);
+      border:1px solid var(--line);
+      font-weight:900; font-size:12px;
+      color: var(--muted);
+    }
+    .dot{width:10px;height:10px;border-radius:99px;background:var(--accent3)}
+
+    /* Main */
+    .main{
+      padding:18px;
+    }
+    .top{
+      display:flex; gap:12px; align-items:flex-end; justify-content:space-between; flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .top h2{margin:0;font-size:24px}
+    .top p{margin:4px 0 0;color:var(--muted);font-weight:700}
+    .topRight{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .chip{
+      padding:8px 10px;border-radius:999px;border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 70%, transparent);
+      font-weight:900;font-size:12px;color:var(--muted);
+    }
+
+    /* Layout cards */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media(max-width:980px){
+      .app{grid-template-columns:1fr}
+      .side{height:auto;position:relative}
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--panel) 80%, transparent);
+      border:1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    body.light .card{box-shadow: 0 12px 30px rgba(2,6,23,.10)}
+    .cardHead{
+      padding:14px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--line);
+      background: color-mix(in srgb, var(--panel2) 70%, transparent);
+    }
+    .cardHead b{font-size:14px}
+    .cardBody{padding:14px 16px}
+
+    .kpis{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+    }
+    @media(max-width:700px){.kpis{grid-template-columns:1fr}}
+    .kpi{
+      padding:12px;border-radius:16px;
+      background: color-mix(in srgb, var(--card) 75%, transparent);
+      border:1px solid var(--line);
+    }
+    .kpi .num{font-size:18px;font-weight:950}
+    .kpi .lab{color:var(--muted);font-weight:750;font-size:12px;margin-top:2px}
+
+    /* Forms */
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:700px){.row{grid-template-columns:1fr}}
+    .input, select, textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 70%, transparent);
+      color:var(--text);
+      outline:none;
+      font-weight:750;
+    }
+    textarea{min-height:86px;resize:vertical}
+    label{font-size:12px;color:var(--muted);font-weight:900;display:block;margin:10px 0 6px}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn.sm{padding:9px 10px;border-radius:12px;font-size:13px}
+    .btn.green{background:var(--accent2)}
+    .btn.warn{background:var(--accent3); color:#111}
+
+    /* Task list */
+    .tasks{display:grid;gap:10px}
+    .task{
+      padding:12px;border-radius:16px;border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 75%, transparent);
+      display:flex;gap:10px;align-items:flex-start;
+      cursor:pointer;
+    }
+    .task:hover{transform:translateY(-1px)}
+    .check{
+      width:26px;height:26px;border-radius:10px;border:1px solid var(--line);
+      display:grid;place-items:center;font-weight:950;
+      background: transparent;
+    }
+    .task b{display:block}
+    .task small{display:block;color:var(--muted);font-weight:700;margin-top:3px;line-height:1.4}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--line);
+      background: transparent;
+      font-size:12px;font-weight:950;color:var(--muted);
+      margin-top:8px;
+    }
+    .badge.ok{border-color: color-mix(in srgb, var(--accent2) 45%, var(--line)); color: color-mix(in srgb, var(--accent2) 60%, var(--text))}
+    .badge.ver{border-color: color-mix(in srgb, #3b82f6 45%, var(--line)); color: color-mix(in srgb, #3b82f6 60%, var(--text))}
+
+    /* FAQ */
+    .faq{display:grid;gap:10px}
+    details{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background: color-mix(in srgb, var(--card) 72%, transparent);
+      padding:10px 12px;
+    }
+    summary{cursor:pointer;font-weight:950}
+    details p{color:var(--muted);font-weight:700;line-height:1.6;margin:8px 0 0}
+
+    /* Toast */
+    .toast{
+      position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:10px 12px;
+      display:none; gap:10px; align-items:center;
+      box-shadow: var(--shadow);
+      z-index:99;
+      font-weight:950;
+    }
+    .toast small{display:block;color:var(--muted);font-weight:750;margin-top:2px}
+    .toastDot{width:10px;height:10px;border-radius:99px;background:var(--accent2)}
+
+    .footer{
+      margin-top:14px;
+      padding:12px 2px;
+      color:var(--muted);
+      font-weight:750;
+      font-size:12px;
+    }
+    iframe{width:100%;height:270px;border:0;border-radius:16px}
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"></div>
+      <div>
+        <h1>UniGuide</h1>
+        <p>Lobachevsky State University of Nizhni Novgorod</p>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <a class="active" href="#dashboard" onclick="setActive(this)"><span class="ico">🏠</span>Dashboard</a>
+      <a href="#prototype" onclick="setActive(this)"><span class="ico">✅</span>Task Board</a>
+      <a href="#docs" onclick="setActive(this)"><span class="ico">📄</span>Documents</a>
+      <a href="#admin" onclick="setActive(this)"><span class="ico">🧑‍💼</span>Admin Mock</a>
+      <a href="#security" onclick="setActive(this)"><span class="ico">🛡️</span>Privacy & Security</a>
+      <a href="#map" onclick="setActive(this)"><span class="ico">📍</span>Campus Map</a>
+      <a href="#faq" onclick="setActive(this)"><span class="ico">❓</span>FAQ</a>
+      <a href="#roadmap" onclick="setActive(this)"><span class="ico">🗺️</span>Roadmap</a>
+    </nav>
+
+    <div class="sideCard">
+      <b>Session</b>
+      <span class="pill" id="userPill"><span class="dot"></span>Not signed in</span>
+      <small>
+        This is a front-end demo (localStorage). Use any Student ID to load your personalized checklist.
+      </small>
+
+      <div class="sideBtnRow">
+        <button class="btn sm secondary" onclick="toggleTheme()">Theme</button>
+        <button class="btn sm" onclick="scrollTo('prototype')">Open Task Board</button>
+      </div>
+    </div>
+
+    <div class="sideCard">
+      <b>What’s different?</b>
+      <small>
+        Dashboard layout + sidebar navigation (NOT marketplace-style). Prototype includes Tasks, Documents, and Admin verification.
+      </small>
+    </div>
+
+    <div class="footer">
+      © 2025 UniGuide · Student Project Demo
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- DASHBOARD -->
+    <section id="dashboard">
+      <div class="top">
+        <div>
+          <h2>Student Dashboard</h2>
+          <p>Your campus checklist — simple steps, fewer mistakes.</p>
+        </div>
+        <div class="topRight">
+          <span class="chip" id="profileChip">Profile: —</span>
+          <span class="chip" id="idChip">Student ID: —</span>
+          <button class="btn secondary sm" onclick="clearDemo()">Reset demo</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cardHead">
+            <b>Overview</b>
+            <span class="chip">UniGuide Prototype</span>
+          </div>
+          <div class="cardBody">
+            <div class="kpis">
+              <div class="kpi"><div class="num" id="kpiTasks">0</div><div class="lab">Tasks in board</div></div>
+              <div class="kpi"><div class="num" id="kpiDone">0</div><div class="lab">Completed</div></div>
+              <div class="kpi"><div class="num" id="kpiDocs">0</div><div class="lab">Documents saved</div></div>
+            </div>
+
+            <label>Sign in (demo)</label>
+            <div class="row">
+              <div>
+                <input class="input" id="studentId" placeholder="Student ID (e.g., 20251234)">
+              </div>
+              <div>
+                <select class="input" id="profile">
+                  <option>Incoming Local Student</option>
+                  <option>International Student</option>
+                  <option>Busy Student</option>
+                </select>
+              </div>
+            </div>
+            <div class="btnRow">
+              <button class="btn green sm" onclick="signin()">Load my checklist</button>
+              <button class="btn sm secondary" onclick="scrollTo('docs')">Go to Documents</button>
+            </div>
+            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px" id="signinMsg"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHead">
+            <b>Why UniGuide?</b>
+            <span class="chip">Problem → Solution</span>
+          </div>
+          <div class="cardBody">
+            <p style="margin:0;color:var(--muted);font-weight:750;line-height:1.7">
+              Students often face fragmented info, missing documents, and missed deadlines. UniGuide centralizes steps in one place:
+              <b>Task Board</b>, <b>Documents</b>, and friendly reminders. Staff can “verify” tasks via admin panel in the full system.
+            </p>
+            <div style="margin-top:12px" class="row">
+              <div class="kpi">
+                <div class="num">↓</div>
+                <div class="lab">Office visits</div>
+              </div>
+              <div class="kpi">
+                <div class="num">↑</div>
+                <div class="lab">On-time completion</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASK BOARD -->
+    <section id="prototype" style="margin-top:14px">
+      <div class="top">
+        <div>
+          <h2>Task Board</h2>
+          <p>Click a task to mark done. Admin can verify tasks.</p>
+        </div>
+        <div class="topRight">
+          <button class="btn secondary sm" onclick="seedTasks()">Seed tasks</button>
+          <button class="btn sm" onclick="scrollTo('admin')">Admin Verify</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cardHead">
+            <b>Add a task</b>
+            <span class="chip">Create</span>
+          </div>
+          <div class="cardBody">
+            <div class="row">
+              <div>
+                <label>Task title</label>
+                <input class="input" id="newTaskTitle" placeholder="e.g., Collect student card">
+              </div>
+              <div>
+                <label>Deadline</label>
+                <input class="input" id="newTaskDeadline" type="date">
+              </div>
+            </div>
+            <label>Note</label>
+            <textarea class="input" id="newTaskNote" placeholder="Short instruction (optional)"></textarea>
+            <div class="btnRow">
+              <button class="btn green sm" onclick="addTask()">Add task</button>
+              <button class="btn sm secondary" onclick="scrollTo('dashboard')">Back to Dashboard</button>
+            </div>
+            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
+              Tip: Use the profile selector to seed different onboarding steps.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHead">
+            <b>My tasks</b>
+            <span class="chip">Track</span>
+          </div>
+          <div class="cardBody">
+            <div class="tasks" id="taskList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCUMENTS -->
+    <section id="docs" style="margin-top:14px">
+      <div class="top">
+        <div>
+          <h2>Documents</h2>
+          <p>Save file names in one place (demo). In real app: secure storage.</p>
+        </div>
+        <div class="topRight">
+          <button class="btn sm secondary" onclick="scrollTo('prototype')">Back to Tasks</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cardHead">
+            <b>Upload (demo)</b>
+            <span class="chip">Store</span>
+          </div>
+          <div class="cardBody">
+            <label>Document name</label>
+            <input class="input" id="docName" placeholder="e.g., Passport scan / Enrollment form">
+            <label>Choose file</label>
+            <input class="input" id="docFile" type="file">
+            <div class="btnRow">
+              <button class="btn green sm" onclick="uploadDoc()">Save document</button>
+              <button class="btn sm warn" onclick="clearDocs()">Clear docs</button>
+            </div>
+            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
+              Demo note: only file name is stored (no server upload).
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHead">
+            <b>Saved documents</b>
+            <span class="chip">List</span>
+          </div>
+          <div class="cardBody">
+            <div class="tasks" id="docList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN MOCK -->
+    <section id="admin" style="margin-top:14px">
+      <div class="top">
+        <div>
+          <h2>Admin Mock</h2>
+          <p>Simulate office verification (like SIS update).</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cardHead">
+            <b>Verify a task</b>
+            <span class="chip">Office</span>
+          </div>
+          <div class="cardBody">
+            <label>Select task</label>
+            <select class="input" id="adminTaskSelect"></select>
+            <div class="btnRow">
+              <button class="btn sm" onclick="adminVerify()">Verify</button>
+              <button class="btn sm secondary" onclick="scrollTo('prototype')">Go to Task Board</button>
+            </div>
+            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
+              Real version: role-based access + audit logs.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHead">
+            <b>Security notes</b>
+            <span class="chip">RBAC</span>
+          </div>
+          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
+            • Students: view/complete tasks, upload docs<br>
+            • Staff: verify tasks, update requirements<br>
+            • All changes logged (who/when)<br>
+            • Data retention: remove after graduation or by request
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECURITY -->
+    <section id="security" style="margin-top:14px">
+      <div class="top">
+        <div>
+          <h2>Privacy & Security</h2>
+          <p>What UniGuide must protect.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cardHead"><b>Must-haves</b><span class="chip">Security</span></div>
+          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
+            • Encryption in transit (HTTPS) and at rest<br>
+            • Role-based access control (students/staff)<br>
+            • Audit logs for task changes<br>
+            • Strong authentication (SSO / student portal)<br>
+          </div>
+        </div>
+        <div class="card">
+          <div class="cardHead"><b>Edge cases</b><span class="chip">Support</span></div>
+          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
+            • SIS mismatch → support ticket flow<br>
+            • Missed deadlines → escalation + guidance<br>
+            • Upload errors → retry + offline queue (future)<br>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map" style="margin-top:14px">
+      <div class="top">
+        <div>
+          <h2>Campus Map</h2>
+          <p>Quick access to location (demo embed).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardHead"><b>LSUNN location</b><span class="chip">Map</span></div>
+        <div class="cardBody">
+          <iframe
+            src="https://www.google.com/maps?q=Lobachevsky+State+University+of+Nizhni+Novgorod&output=embed"
+            loading="lazy"></iframe>
+          <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
+            Future: building-specific pins and office hours.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" style="margin-top:14px">
+      <div class="top">
+        <div>
+          <h2>FAQ</h2>
+          <p>Answers students always ask.</p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>Is UniGuide an official system?</summary>
+          <p>This is a student project prototype. In a real deployment, it could integrate with the university portal/SIS.</p>
+        </details>
+        <details>
+          <summary>Does it store my files?</summary>
+          <p>In this demo, only file names are saved in your browser. Real version would use secure storage + access control.</p>
+        </details>
+        <details>
+          <summary>Can staff verify my tasks?</summary>
+          <p>Yes (mock): go to Admin Mock and click “Verify”. Real version would require staff authentication and audit logs.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section id="roadmap" style="margin-top:14px">
+      <div class="top">
+        <div>
+          <h2>Roadmap</h2>
+          <p>How to implement the real system.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cardHead"><b>Phase 1 — MVP</b><span class="chip">Build</span></div>
+          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
+            1) UX + screens<br>
+            2) Task Board + Document center<br>
+            3) Notification module (demo)<br>
+            4) Admin dashboard (verify tasks)<br>
+            5) Small pilot with new students
+          </div>
+        </div>
+        <div class="card">
+          <div class="cardHead"><b>Phase 2 — Expansion</b><span class="chip">Scale</span></div>
+          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
+            • Multi-language (RU/EN/TR/AR)<br>
+            • Calendar sync + digest reminders<br>
+            • Analytics for staff<br>
+            • International student toolkit
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        UniGuide Dashboard Prototype · Lobachevsky State University of Nizhni Novgorod · © 2025
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toastDot"></div>
+  <div>
+    <div id="toastTitle">Done</div>
+    <small id="toastSub">Saved</small>
+  </div>
+</div>
+
+<script>
+  // LocalStorage demo state
+  const KEY = "uniguide_dash_demo_v2";
+
+  const state = load(KEY, {
+    user: null, // {id, profile}
+    tasks: [],
+    docs: []
+  });
+
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+  function load(k, fallback){
+    try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }
+    catch(e){ return fallback; }
+  }
+  function uid(){ return Math.random().toString(16).slice(2)+Date.now().toString(16); }
+
+  function toast(title, sub="Saved"){
+    const el = document.getElementById("toast");
+    document.getElementById("toastTitle").textContent = title;
+    document.getElementById("toastSub").textContent = sub;
+    el.style.display = "flex";
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=> el.style.display="none", 2200);
+  }
+
+  function setActive(a){
+    document.querySelectorAll(".nav a").forEach(x=>x.classList.remove("active"));
+    a.classList.add("active");
+  }
+
+  function scrollTo(id){
+    document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function toggleTheme(){
+    document.body.classList.toggle("light");
+    toast("Theme switched", document.body.classList.contains("light") ? "Light mode" : "Dark mode");
+  }
+
+  function plusDays(n){
+    const d = new Date(Date.now()+n*86400000);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function signin(){
+    const id = document.getElementById("studentId").value.trim();
+    const profile = document.getElementById("profile").value;
+    const msg = document.getElementById("signinMsg");
+
+    if(!id){
+      msg.textContent = "Please enter Student ID.";
+      toast("Missing ID", "Enter student ID to load checklist");
+      return;
+    }
+
+    state.user = {id, profile};
+    seedTasks(true);
+    save();
+    renderAll();
+    msg.textContent = `Loaded tasks for ${profile} (ID: ${id}).`;
+    toast("Welcome!", "Checklist updated");
+  }
+
+  function seedTasks(force=false){
+    if(!state.user) return;
+    if(state.tasks.length && !force) return;
+
+    const profile = state.user.profile;
+    const base = [
+      {id:uid(), title:"Upload enrollment documents", deadline:plusDays(3), note:"Passport/ID + required forms.", done:false, verified:false},
+      {id:uid(), title:"Collect student card", deadline:plusDays(7), note:"Student Affairs (09:00–17:00).", done:false, verified:false},
+      {id:uid(), title:"Register courses", deadline:plusDays(10), note:"Check program requirements in portal.", done:false, verified:false},
+    ];
+
+    const intl = [
+      {id:uid(), title:"Visa/residency checklist", deadline:plusDays(5), note:"Follow International Office timeline.", done:false, verified:false},
+      {id:uid(), title:"Medical insurance confirmation", deadline:plusDays(8), note:"Save policy file in Documents.", done:false, verified:false},
+    ];
+
+    const busy = [
+      {id:uid(), title:"Set notification preferences", deadline:plusDays(1), note:"Enable weekly digest reminders.", done:false, verified:false},
+    ];
+
+    state.tasks = [...base];
+    if(profile === "International Student") state.tasks.push(...intl);
+    if(profile === "Busy Student") state.tasks.push(...busy);
+
+    save();
+    renderAll();
+    toast("Tasks seeded", "Profile-based checklist created");
+  }
+
+  function addTask(){
+    if(!state.user){
+      toast("Sign in first", "Use Student ID on Dashboard");
+      return;
+    }
+    const title = document.getElementById("newTaskTitle").value.trim();
+    const deadline = document.getElementById("newTaskDeadline").value || plusDays(7);
+    const note = document.getElementById("newTaskNote").value.trim() || "No note.";
+
+    if(!title){
+      toast("Task title required", "Write a short title");
+      return;
+    }
+
+    state.tasks.unshift({id:uid(), title, deadline, note, done:false, verified:false});
+    document.getElementById("newTaskTitle").value="";
+    document.getElementById("newTaskDeadline").value="";
+    document.getElementById("newTaskNote").value="";
+    save();
+    renderTasks();
+    toast("Task added", "It’s now on your board");
+  }
+
+  function toggleTask(id){
+    const t = state.tasks.find(x=>x.id===id);
+    if(!t) return;
+    t.done = !t.done;
+    save();
+    renderTasks();
+    toast(t.done ? "Completed!" : "Reopened", t.done ? "Marked done" : "Back to pending");
+  }
+
+  function uploadDoc(){
+    if(!state.user){
+      toast("Sign in first", "Use Student ID on Dashboard");
+      return;
+    }
+    const name = document.getElementById("docName").value.trim();
+    const file = document.getElementById("docFile").files?.[0];
+
+    if(!name){
+      toast("Document name required", "Give it a name");
+      return;
+    }
+
+    state.docs.unshift({
+      id:uid(),
+      name,
+      filename: file ? file.name : "(no file selected)",
+      date: new Date().toISOString()
+    });
+
+    document.getElementById("docName").value="";
+    document.getElementById("docFile").value="";
+    save();
+    renderDocs();
+    toast("Document saved", "Stored in demo list");
+  }
+
+  function adminVerify(){
+    if(!state.user){
+      toast("Sign in first", "Use Student ID on Dashboard");
+      return;
+    }
+    const id = document.getElementById("adminTaskSelect").value;
+    const t = state.tasks.find(x=>x.id===id);
+    if(!t){
+      toast("No task selected", "Pick a task");
+      return;
+    }
+    t.verified = true;
+    save();
+    renderTasks();
+    toast("Verified", "Office verification applied");
+  }
+
+  function clearDocs(){
+    state.docs = [];
+    save();
+    renderDocs();
+    toast("Documents cleared", "Demo list emptied");
+  }
+
+  function clearDemo(){
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+
+  function renderUser(){
+    const pill = document.getElementById("userPill");
+    const profileChip = document.getElementById("profileChip");
+    const idChip = document.getElementById("idChip");
+
+    if(!state.user){
+      pill.innerHTML = `<span class="dot"></span>Not signed in`;
+      profileChip.textContent = "Profile: —";
+      idChip.textContent = "Student ID: —";
+      return;
+    }
+    pill.innerHTML = `<span class="dot" style="background:var(--accent2)"></span>${state.user.profile}`;
+    profileChip.textContent = "Profile: " + state.user.profile;
+    idChip.textContent = "Student ID: " + state.user.id;
+  }
+
+  function renderKPIs(){
+    document.getElementById("kpiTasks").textContent = state.tasks.length;
+    document.getElementById("kpiDone").textContent = state.tasks.filter(t=>t.done).length;
+    document.getElementById("kpiDocs").textContent = state.docs.length;
+  }
+
+  function renderTasks(){
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    if(!state.user){
+      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
+        Sign in on Dashboard to load tasks.
+      </div>`;
+      renderAdminSelect();
+      renderUser(); renderKPIs();
+      return;
+    }
+
+    if(state.tasks.length === 0){
+      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
+        No tasks yet. Click “Seed tasks” or add one.
+      </div>`;
+      renderAdminSelect();
+      renderUser(); renderKPIs();
+      return;
+    }
+
+    state.tasks.forEach(t=>{
+      const el = document.createElement("div");
+      el.className = "task";
+      el.onclick = ()=>toggleTask(t.id);
+
+      const status = t.verified ? `<span class="badge ver">✅ Verified</span>` :
+                     t.done ? `<span class="badge ok">🟢 Done</span>` :
+                              `<span class="badge">🟡 Pending</span>`;
+
+      el.innerHTML = `
+        <div class="check">${t.done ? "✓" : ""}</div>
+        <div style="flex:1">
+          <b>${escapeHtml(t.title)}</b>
+          <small>Deadline: ${escapeHtml(t.deadline)}</small>
+          <small>${escapeHtml(t.note)}</small>
+          ${status}
+        </div>
+      `;
+      list.appendChild(el);
+    });
+
+    renderAdminSelect();
+    renderUser(); renderKPIs();
+  }
+
+  function renderDocs(){
+    const list = document.getElementById("docList");
+    list.innerHTML = "";
+
+    if(!state.user){
+      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
+        Sign in on Dashboard to save documents.
+      </div>`;
+      renderUser(); renderKPIs();
+      return;
+    }
+
+    if(state.docs.length === 0){
+      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
+        No saved documents yet.
+      </div>`;
+      renderUser(); renderKPIs();
+      return;
+    }
+
+    state.docs.forEach(d=>{
+      const el = document.createElement("div");
+      el.className = "task";
+      el.style.cursor="default";
+      el.onclick = null;
+      el.innerHTML = `
+        <div class="check">📄</div>
+        <div style="flex:1">
+          <b>${escapeHtml(d.name)}</b>
+          <small>File: ${escapeHtml(d.filename)}</small>
+          <small>Saved: ${new Date(d.date).toLocaleString()}</small>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+
+    renderUser(); renderKPIs();
+  }
+
+  function renderAdminSelect(){
+    const sel = document.getElementById("adminTaskSelect");
+    sel.innerHTML = "";
+    state.tasks.forEach(t=>{
+      const opt = document.createElement("option");
+      opt.value = t.id;
+      opt.textContent = `${t.title} (${t.verified ? "Verified" : "Not verified"})`;
+      sel.appendChild(opt);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  }
+
+  function renderAll(){
+    renderUser();
+    renderTasks();
+    renderDocs();
+    renderKPIs();
+  }
+
+  renderAll();
+</script>
+
+</body>
+</html>
