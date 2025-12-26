@@ -2,971 +2,790 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>UniGuide — LSUNN Student Assistant</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UniGuide — Lobachevsky University</title>
   <style>
     :root{
-      --bg:#0b1020; --panel:#111a33; --panel2:#0f1730; --card:#121d3a;
-      --text:#e9eefc; --muted:#a9b6df; --line:#26325c;
-      --accent:#7c3aed; --accent2:#22c55e; --accent3:#f59e0b;
-      --shadow: 0 18px 50px rgba(0,0,0,.45);
-      --radius: 18px;
+      --blue:#1e40af;
+      --blue2:#2563eb;
+      --bg:#f6f9ff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --line:#e2e8f0;
+      --chip:#eff6ff;
+      --shadow:0 12px 30px rgba(2,6,23,.10);
+      --radius:18px;
     }
-    body.light{
-      --bg:#f6f8ff; --panel:#ffffff; --panel2:#f1f5ff; --card:#ffffff;
-      --text:#0f172a; --muted:#475569; --line:#dbe3ff;
-      --accent:#6d28d9; --accent2:#16a34a; --accent3:#f59e0b;
-      --shadow: 0 18px 50px rgba(2,6,23,.12);
-    }
-
     *{box-sizing:border-box}
-    body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 600px at 15% 10%, rgba(124,58,237,.25), transparent 60%),
-                  radial-gradient(900px 550px at 90% 20%, rgba(34,197,94,.18), transparent 55%),
-                  radial-gradient(900px 700px at 30% 100%, rgba(245,158,11,.12), transparent 60%),
-                  var(--bg);
-      color:var(--text);
-      transition:.25s;
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+    a{color:inherit}
+    .wrap{max-width:1150px;margin:0 auto;padding:18px}
+    header{
+      position:sticky;top:0;z-index:50;
+      background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
     }
-    a{color:inherit;text-decoration:none}
-
-    .app{
-      display:grid;
-      grid-template-columns: 280px 1fr;
-      min-height:100vh;
-    }
-
-    /* Sidebar */
-    .side{
-      position:sticky; top:0; height:100vh;
-      padding:18px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 85%, transparent), var(--panel2));
-      border-right: 1px solid var(--line);
-      overflow:auto;
-    }
-    .brand{
-      display:flex; gap:12px; align-items:center;
-      padding:10px 10px 16px;
-    }
-    .mark{
-      width:46px;height:46px;border-radius:16px;
-      background: conic-gradient(from 220deg, var(--accent), #3b82f6, var(--accent2), var(--accent));
-      box-shadow: var(--shadow);
-    }
-    .brand h1{
-      margin:0; font-size:16px; line-height:1.1; letter-spacing:.2px;
-    }
-    .brand p{margin:4px 0 0; font-size:12px; color:var(--muted); font-weight:650}
-
-    .nav{
-      display:flex; flex-direction:column; gap:8px;
-      padding:6px 10px;
-    }
-    .nav a{
-      padding:10px 12px; border-radius:14px;
-      border:1px solid transparent;
-      background: transparent;
-      font-weight:800; font-size:13px;
-      display:flex; align-items:center; gap:10px;
-      color: color-mix(in srgb, var(--text) 86%, var(--muted));
-    }
-    .nav a:hover{
-      border-color: var(--line);
-      background: color-mix(in srgb, var(--card) 55%, transparent);
-    }
-    .nav a.active{
-      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent);
-      border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
-      color: var(--text);
-    }
-    .ico{width:18px;height:18px;display:inline-grid;place-items:center}
-    .sideCard{
-      margin:14px 10px 0;
-      padding:14px;
-      border-radius: var(--radius);
-      background: color-mix(in srgb, var(--card) 70%, transparent);
-      border:1px solid var(--line);
-    }
-    .sideCard b{display:block}
-    .sideCard small{display:block;color:var(--muted);line-height:1.5;margin-top:6px;font-weight:650}
-
-    .sideBtnRow{
-      display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;
-    }
-    .btn{
-      border:none; cursor:pointer;
-      padding:10px 12px; border-radius:14px;
-      font-weight:900;
-      background: var(--accent);
-      color:white;
-      box-shadow: var(--shadow);
-    }
-    .btn.secondary{
-      background: transparent;
-      border:1px solid var(--line);
-      color:var(--text);
-      box-shadow:none;
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .uLogo{width:44px;height:44px;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--line);background:white}
+    .brand h1{margin:0;font-size:16px;color:var(--blue);font-weight:900;letter-spacing:.2px}
+    .brand small{display:block;margin-top:3px;color:var(--muted);font-weight:700}
+    .account{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .avatar{width:42px;height:42px;border-radius:999px;border:2px solid var(--chip);overflow:hidden}
+    .accText{font-size:13px;font-weight:800;color:var(--muted);line-height:1.25}
+    .accText b{color:var(--text)}
+    .lang{display:flex;align-items:center;gap:8px}
+    select{
+      padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:white;
+      font-weight:800;color:var(--text);outline:none
     }
     .pill{
-      margin-top:10px;
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border-radius:999px;
-      background: color-mix(in srgb, var(--card) 80%, transparent);
-      border:1px solid var(--line);
-      font-weight:900; font-size:12px;
-      color: var(--muted);
-    }
-    .dot{width:10px;height:10px;border-radius:99px;background:var(--accent3)}
-
-    /* Main */
-    .main{
-      padding:18px;
-    }
-    .top{
-      display:flex; gap:12px; align-items:flex-end; justify-content:space-between; flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-    .top h2{margin:0;font-size:24px}
-    .top p{margin:4px 0 0;color:var(--muted);font-weight:700}
-    .topRight{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .chip{
       padding:8px 10px;border-radius:999px;border:1px solid var(--line);
-      background: color-mix(in srgb, var(--card) 70%, transparent);
-      font-weight:900;font-size:12px;color:var(--muted);
+      background:var(--chip);color:var(--blue);font-weight:900;font-size:12px;
     }
-
-    /* Layout cards */
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      align-items:start;
+    .hero{
+      margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);
+      background:linear-gradient(135deg, #ffffff, #f1f7ff);
+      box-shadow:var(--shadow);overflow:hidden;
     }
-    @media(max-width:980px){
-      .app{grid-template-columns:1fr}
-      .side{height:auto;position:relative}
-      .grid{grid-template-columns:1fr}
+    .heroGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:0}
+    @media(max-width:900px){.heroGrid{grid-template-columns:1fr}}
+    .heroMain{padding:22px}
+    .heroMain h2{margin:0 0 8px;color:var(--blue);font-size:28px;line-height:1.12}
+    .heroMain p{margin:0 0 14px;color:var(--muted);font-weight:650;line-height:1.65}
+    .heroSide{padding:18px;border-left:1px solid var(--line);background:rgba(255,255,255,.6)}
+    @media(max-width:900px){.heroSide{border-left:none;border-top:1px solid var(--line)}}
+    .miniCard{
+      border:1px solid var(--line);border-radius:16px;background:white;padding:14px;box-shadow:0 6px 16px rgba(2,6,23,.06)
     }
-
+    .miniCard h3{margin:0 0 10px;font-size:14px;color:var(--blue)}
+    .miniCard ul{margin:0;padding-left:18px;color:var(--muted);font-weight:650;line-height:1.7}
+    .section{margin-top:22px}
+    .sectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .sectionHead h3{margin:0;font-size:20px;color:var(--text)}
+    .sectionHead p{margin:0;color:var(--muted);font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
     .card{
-      border-radius: var(--radius);
-      background: color-mix(in srgb, var(--panel) 80%, transparent);
+      background:var(--card);
       border:1px solid var(--line);
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-      overflow:hidden;
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 6px 18px rgba(2,6,23,.06);
+      cursor:pointer;
+      transition:.16s;
+      display:flex;gap:12px;align-items:flex-start;
     }
-    body.light .card{box-shadow: 0 12px 30px rgba(2,6,23,.10)}
-    .cardHead{
-      padding:14px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid var(--line);
-      background: color-mix(in srgb, var(--panel2) 70%, transparent);
-    }
-    .cardHead b{font-size:14px}
-    .cardBody{padding:14px 16px}
-
-    .kpis{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-    }
-    @media(max-width:700px){.kpis{grid-template-columns:1fr}}
-    .kpi{
-      padding:12px;border-radius:16px;
-      background: color-mix(in srgb, var(--card) 75%, transparent);
+    .card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(2,6,23,.10)}
+    .iconBox{
+      width:46px;height:46px;border-radius:14px;
+      background:linear-gradient(135deg, rgba(37,99,235,.15), rgba(30,64,175,.08));
       border:1px solid var(--line);
+      display:grid;place-items:center;flex:0 0 auto;
     }
-    .kpi .num{font-size:18px;font-weight:950}
-    .kpi .lab{color:var(--muted);font-weight:750;font-size:12px;margin-top:2px}
-
-    /* Forms */
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media(max-width:700px){.row{grid-template-columns:1fr}}
-    .input, select, textarea{
-      width:100%;
+    .card h4{margin:0;color:var(--blue);font-size:15px}
+    .card p{margin:6px 0 0;color:var(--muted);font-weight:650;font-size:13px;line-height:1.5}
+    .navRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      border:1px solid var(--line);
+      background:white;
       padding:10px 12px;
       border-radius:14px;
-      border:1px solid var(--line);
-      background: color-mix(in srgb, var(--card) 70%, transparent);
-      color:var(--text);
-      outline:none;
-      font-weight:750;
-    }
-    textarea{min-height:86px;resize:vertical}
-    label{font-size:12px;color:var(--muted);font-weight:900;display:block;margin:10px 0 6px}
-    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn.sm{padding:9px 10px;border-radius:12px;font-size:13px}
-    .btn.green{background:var(--accent2)}
-    .btn.warn{background:var(--accent3); color:#111}
-
-    /* Task list */
-    .tasks{display:grid;gap:10px}
-    .task{
-      padding:12px;border-radius:16px;border:1px solid var(--line);
-      background: color-mix(in srgb, var(--card) 75%, transparent);
-      display:flex;gap:10px;align-items:flex-start;
+      font-weight:900;
       cursor:pointer;
+      box-shadow:0 6px 16px rgba(2,6,23,.06);
     }
-    .task:hover{transform:translateY(-1px)}
-    .check{
-      width:26px;height:26px;border-radius:10px;border:1px solid var(--line);
-      display:grid;place-items:center;font-weight:950;
-      background: transparent;
+    .btn.primary{background:var(--blue);border-color:transparent;color:white}
+    .btn:active{transform:translateY(1px)}
+    .page{display:none}
+    .page.active{display:block}
+    .breadcrumbs{
+      display:flex;align-items:center;gap:10px;color:var(--muted);
+      font-weight:800;font-size:13px;margin:8px 0 14px;
     }
-    .task b{display:block}
-    .task small{display:block;color:var(--muted);font-weight:700;margin-top:3px;line-height:1.4}
-    .badge{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid var(--line);
-      background: transparent;
-      font-size:12px;font-weight:950;color:var(--muted);
-      margin-top:8px;
+    .breadcrumbs a{color:var(--blue);text-decoration:none}
+    .note{
+      background:white;border:1px solid var(--line);
+      border-radius:16px;padding:12px;color:var(--muted);
+      font-weight:650;line-height:1.6;
     }
-    .badge.ok{border-color: color-mix(in srgb, var(--accent2) 45%, var(--line)); color: color-mix(in srgb, var(--accent2) 60%, var(--text))}
-    .badge.ver{border-color: color-mix(in srgb, #3b82f6 45%, var(--line)); color: color-mix(in srgb, #3b82f6 60%, var(--text))}
-
-    /* FAQ */
-    .faq{display:grid;gap:10px}
-    details{
-      border:1px solid var(--line);
-      border-radius:16px;
-      background: color-mix(in srgb, var(--card) 72%, transparent);
-      padding:10px 12px;
-    }
-    summary{cursor:pointer;font-weight:950}
-    details p{color:var(--muted);font-weight:700;line-height:1.6;margin:8px 0 0}
-
-    /* Toast */
-    .toast{
-      position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
-      background: color-mix(in srgb, var(--panel) 92%, transparent);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:10px 12px;
-      display:none; gap:10px; align-items:center;
-      box-shadow: var(--shadow);
-      z-index:99;
-      font-weight:950;
-    }
-    .toast small{display:block;color:var(--muted);font-weight:750;margin-top:2px}
-    .toastDot{width:10px;height:10px;border-radius:99px;background:var(--accent2)}
-
     .footer{
-      margin-top:14px;
-      padding:12px 2px;
-      color:var(--muted);
-      font-weight:750;
-      font-size:12px;
+      margin-top:24px;padding:18px 0;border-top:1px solid var(--line);
+      color:var(--muted);font-weight:700;font-size:12px;
     }
-    iframe{width:100%;height:270px;border:0;border-radius:16px}
+    /* RTL support (Arabic) */
+    [dir="rtl"] .topbar{flex-direction:row-reverse}
+    [dir="rtl"] .brand{flex-direction:row-reverse}
+    [dir="rtl"] .account{flex-direction:row-reverse}
+    [dir="rtl"] .heroGrid{direction:rtl}
+    [dir="rtl"] .heroSide{border-left:none;border-right:1px solid var(--line)}
+    @media(max-width:900px){[dir="rtl"] .heroSide{border-right:none;border-top:1px solid var(--line)}}
   </style>
 </head>
 <body>
 
-<div class="app">
-  <!-- SIDEBAR -->
-  <aside class="side">
-    <div class="brand">
-      <div class="mark" aria-hidden="true"></div>
-      <div>
-        <h1>UniGuide</h1>
-        <p>Lobachevsky State University of Nizhni Novgorod</p>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <!-- Lobachevsky University logo placeholder (embedded SVG) -->
+        <div class="uLogo" aria-label="Lobachevsky University logo">
+          <svg viewBox="0 0 64 64" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#1e40af"/>
+                <stop offset="1" stop-color="#2563eb"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="64" height="64" rx="14" fill="white"/>
+            <path d="M14 46V20h8l10 12 10-12h8v26h-8V33L32 43 22 33v13z" fill="url(#g)"/>
+            <rect x="14" y="50" width="36" height="4" rx="2" fill="#1e40af" opacity=".25"/>
+          </svg>
+        </div>
+        <div>
+          <h1 id="t_brandTitle">UniGuide</h1>
+          <small id="t_brandSub">Lobachevsky University — New Student Guide</small>
+        </div>
+      </div>
+
+      <div class="account">
+        <div class="avatar">
+          <img src="https://via.placeholder.com/80" alt="Student profile" width="42" height="42"/>
+        </div>
+        <div class="accText">
+          <div><b id="t_studentName">Student:</b> <span id="studentNameVal">Alex Johnson</span></div>
+          <div><b id="t_studentId">ID:</b> <span id="studentIdVal">20251234</span></div>
+        </div>
+
+        <span class="pill" id="t_dummyBadge">Dummy Account</span>
+
+        <div class="lang">
+          <select id="langSelect" aria-label="Language">
+            <option value="en" selected>English</option>
+            <option value="ar">Arabic</option>
+            <option value="zh">Chinese</option>
+            <option value="es">Spanish</option>
+            <option value="ru">Russian</option>
+          </select>
+        </div>
       </div>
     </div>
-
-    <nav class="nav" id="nav">
-      <a class="active" href="#dashboard" onclick="setActive(this)"><span class="ico">🏠</span>Dashboard</a>
-      <a href="#prototype" onclick="setActive(this)"><span class="ico">✅</span>Task Board</a>
-      <a href="#docs" onclick="setActive(this)"><span class="ico">📄</span>Documents</a>
-      <a href="#admin" onclick="setActive(this)"><span class="ico">🧑‍💼</span>Admin Mock</a>
-      <a href="#security" onclick="setActive(this)"><span class="ico">🛡️</span>Privacy & Security</a>
-      <a href="#map" onclick="setActive(this)"><span class="ico">📍</span>Campus Map</a>
-      <a href="#faq" onclick="setActive(this)"><span class="ico">❓</span>FAQ</a>
-      <a href="#roadmap" onclick="setActive(this)"><span class="ico">🗺️</span>Roadmap</a>
-    </nav>
-
-    <div class="sideCard">
-      <b>Session</b>
-      <span class="pill" id="userPill"><span class="dot"></span>Not signed in</span>
-      <small>
-        This is a front-end demo (localStorage). Use any Student ID to load your personalized checklist.
-      </small>
-
-      <div class="sideBtnRow">
-        <button class="btn sm secondary" onclick="toggleTheme()">Theme</button>
-        <button class="btn sm" onclick="scrollTo('prototype')">Open Task Board</button>
-      </div>
-    </div>
-
-    <div class="sideCard">
-      <b>What’s different?</b>
-      <small>
-        Dashboard layout + sidebar navigation (NOT marketplace-style). Prototype includes Tasks, Documents, and Admin verification.
-      </small>
-    </div>
-
-    <div class="footer">
-      © 2025 UniGuide · Student Project Demo
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <!-- DASHBOARD -->
-    <section id="dashboard">
-      <div class="top">
-        <div>
-          <h2>Student Dashboard</h2>
-          <p>Your campus checklist — simple steps, fewer mistakes.</p>
-        </div>
-        <div class="topRight">
-          <span class="chip" id="profileChip">Profile: —</span>
-          <span class="chip" id="idChip">Student ID: —</span>
-          <button class="btn secondary sm" onclick="clearDemo()">Reset demo</button>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <div class="cardHead">
-            <b>Overview</b>
-            <span class="chip">UniGuide Prototype</span>
-          </div>
-          <div class="cardBody">
-            <div class="kpis">
-              <div class="kpi"><div class="num" id="kpiTasks">0</div><div class="lab">Tasks in board</div></div>
-              <div class="kpi"><div class="num" id="kpiDone">0</div><div class="lab">Completed</div></div>
-              <div class="kpi"><div class="num" id="kpiDocs">0</div><div class="lab">Documents saved</div></div>
-            </div>
-
-            <label>Sign in (demo)</label>
-            <div class="row">
-              <div>
-                <input class="input" id="studentId" placeholder="Student ID (e.g., 20251234)">
-              </div>
-              <div>
-                <select class="input" id="profile">
-                  <option>Incoming Local Student</option>
-                  <option>International Student</option>
-                  <option>Busy Student</option>
-                </select>
-              </div>
-            </div>
-            <div class="btnRow">
-              <button class="btn green sm" onclick="signin()">Load my checklist</button>
-              <button class="btn sm secondary" onclick="scrollTo('docs')">Go to Documents</button>
-            </div>
-            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px" id="signinMsg"></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="cardHead">
-            <b>Why UniGuide?</b>
-            <span class="chip">Problem → Solution</span>
-          </div>
-          <div class="cardBody">
-            <p style="margin:0;color:var(--muted);font-weight:750;line-height:1.7">
-              Students often face fragmented info, missing documents, and missed deadlines. UniGuide centralizes steps in one place:
-              <b>Task Board</b>, <b>Documents</b>, and friendly reminders. Staff can “verify” tasks via admin panel in the full system.
-            </p>
-            <div style="margin-top:12px" class="row">
-              <div class="kpi">
-                <div class="num">↓</div>
-                <div class="lab">Office visits</div>
-              </div>
-              <div class="kpi">
-                <div class="num">↑</div>
-                <div class="lab">On-time completion</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TASK BOARD -->
-    <section id="prototype" style="margin-top:14px">
-      <div class="top">
-        <div>
-          <h2>Task Board</h2>
-          <p>Click a task to mark done. Admin can verify tasks.</p>
-        </div>
-        <div class="topRight">
-          <button class="btn secondary sm" onclick="seedTasks()">Seed tasks</button>
-          <button class="btn sm" onclick="scrollTo('admin')">Admin Verify</button>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <div class="cardHead">
-            <b>Add a task</b>
-            <span class="chip">Create</span>
-          </div>
-          <div class="cardBody">
-            <div class="row">
-              <div>
-                <label>Task title</label>
-                <input class="input" id="newTaskTitle" placeholder="e.g., Collect student card">
-              </div>
-              <div>
-                <label>Deadline</label>
-                <input class="input" id="newTaskDeadline" type="date">
-              </div>
-            </div>
-            <label>Note</label>
-            <textarea class="input" id="newTaskNote" placeholder="Short instruction (optional)"></textarea>
-            <div class="btnRow">
-              <button class="btn green sm" onclick="addTask()">Add task</button>
-              <button class="btn sm secondary" onclick="scrollTo('dashboard')">Back to Dashboard</button>
-            </div>
-            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
-              Tip: Use the profile selector to seed different onboarding steps.
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="cardHead">
-            <b>My tasks</b>
-            <span class="chip">Track</span>
-          </div>
-          <div class="cardBody">
-            <div class="tasks" id="taskList"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- DOCUMENTS -->
-    <section id="docs" style="margin-top:14px">
-      <div class="top">
-        <div>
-          <h2>Documents</h2>
-          <p>Save file names in one place (demo). In real app: secure storage.</p>
-        </div>
-        <div class="topRight">
-          <button class="btn sm secondary" onclick="scrollTo('prototype')">Back to Tasks</button>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <div class="cardHead">
-            <b>Upload (demo)</b>
-            <span class="chip">Store</span>
-          </div>
-          <div class="cardBody">
-            <label>Document name</label>
-            <input class="input" id="docName" placeholder="e.g., Passport scan / Enrollment form">
-            <label>Choose file</label>
-            <input class="input" id="docFile" type="file">
-            <div class="btnRow">
-              <button class="btn green sm" onclick="uploadDoc()">Save document</button>
-              <button class="btn sm warn" onclick="clearDocs()">Clear docs</button>
-            </div>
-            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
-              Demo note: only file name is stored (no server upload).
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="cardHead">
-            <b>Saved documents</b>
-            <span class="chip">List</span>
-          </div>
-          <div class="cardBody">
-            <div class="tasks" id="docList"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ADMIN MOCK -->
-    <section id="admin" style="margin-top:14px">
-      <div class="top">
-        <div>
-          <h2>Admin Mock</h2>
-          <p>Simulate office verification (like SIS update).</p>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <div class="cardHead">
-            <b>Verify a task</b>
-            <span class="chip">Office</span>
-          </div>
-          <div class="cardBody">
-            <label>Select task</label>
-            <select class="input" id="adminTaskSelect"></select>
-            <div class="btnRow">
-              <button class="btn sm" onclick="adminVerify()">Verify</button>
-              <button class="btn sm secondary" onclick="scrollTo('prototype')">Go to Task Board</button>
-            </div>
-            <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
-              Real version: role-based access + audit logs.
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="cardHead">
-            <b>Security notes</b>
-            <span class="chip">RBAC</span>
-          </div>
-          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
-            • Students: view/complete tasks, upload docs<br>
-            • Staff: verify tasks, update requirements<br>
-            • All changes logged (who/when)<br>
-            • Data retention: remove after graduation or by request
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECURITY -->
-    <section id="security" style="margin-top:14px">
-      <div class="top">
-        <div>
-          <h2>Privacy & Security</h2>
-          <p>What UniGuide must protect.</p>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <div class="cardHead"><b>Must-haves</b><span class="chip">Security</span></div>
-          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
-            • Encryption in transit (HTTPS) and at rest<br>
-            • Role-based access control (students/staff)<br>
-            • Audit logs for task changes<br>
-            • Strong authentication (SSO / student portal)<br>
-          </div>
-        </div>
-        <div class="card">
-          <div class="cardHead"><b>Edge cases</b><span class="chip">Support</span></div>
-          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
-            • SIS mismatch → support ticket flow<br>
-            • Missed deadlines → escalation + guidance<br>
-            • Upload errors → retry + offline queue (future)<br>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MAP -->
-    <section id="map" style="margin-top:14px">
-      <div class="top">
-        <div>
-          <h2>Campus Map</h2>
-          <p>Quick access to location (demo embed).</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="cardHead"><b>LSUNN location</b><span class="chip">Map</span></div>
-        <div class="cardBody">
-          <iframe
-            src="https://www.google.com/maps?q=Lobachevsky+State+University+of+Nizhni+Novgorod&output=embed"
-            loading="lazy"></iframe>
-          <div style="margin-top:10px;color:var(--muted);font-weight:750;font-size:12px">
-            Future: building-specific pins and office hours.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq" style="margin-top:14px">
-      <div class="top">
-        <div>
-          <h2>FAQ</h2>
-          <p>Answers students always ask.</p>
-        </div>
-      </div>
-
-      <div class="faq">
-        <details>
-          <summary>Is UniGuide an official system?</summary>
-          <p>This is a student project prototype. In a real deployment, it could integrate with the university portal/SIS.</p>
-        </details>
-        <details>
-          <summary>Does it store my files?</summary>
-          <p>In this demo, only file names are saved in your browser. Real version would use secure storage + access control.</p>
-        </details>
-        <details>
-          <summary>Can staff verify my tasks?</summary>
-          <p>Yes (mock): go to Admin Mock and click “Verify”. Real version would require staff authentication and audit logs.</p>
-        </details>
-      </div>
-    </section>
-
-    <!-- ROADMAP -->
-    <section id="roadmap" style="margin-top:14px">
-      <div class="top">
-        <div>
-          <h2>Roadmap</h2>
-          <p>How to implement the real system.</p>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <div class="cardHead"><b>Phase 1 — MVP</b><span class="chip">Build</span></div>
-          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
-            1) UX + screens<br>
-            2) Task Board + Document center<br>
-            3) Notification module (demo)<br>
-            4) Admin dashboard (verify tasks)<br>
-            5) Small pilot with new students
-          </div>
-        </div>
-        <div class="card">
-          <div class="cardHead"><b>Phase 2 — Expansion</b><span class="chip">Scale</span></div>
-          <div class="cardBody" style="color:var(--muted);font-weight:750;line-height:1.7">
-            • Multi-language (RU/EN/TR/AR)<br>
-            • Calendar sync + digest reminders<br>
-            • Analytics for staff<br>
-            • International student toolkit
-          </div>
-        </div>
-      </div>
-
-      <div class="footer">
-        UniGuide Dashboard Prototype · Lobachevsky State University of Nizhni Novgorod · © 2025
-      </div>
-    </section>
-  </main>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <div class="toastDot"></div>
-  <div>
-    <div id="toastTitle">Done</div>
-    <small id="toastSub">Saved</small>
   </div>
+</header>
+
+<div class="wrap">
+
+  <!-- HOME PAGE -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <div class="heroGrid">
+        <div class="heroMain">
+          <h2 id="t_homeTitle">Welcome to UniGuide</h2>
+          <p id="t_homeDesc">
+            UniGuide helps new students understand the most important university steps when joining Lobachevsky University.
+            Choose a section below to see clear guidance.
+          </p>
+
+          <div class="navRow">
+            <button class="btn primary" onclick="go('visa')" id="t_goVisaBtn">Open Visa</button>
+            <button class="btn" onclick="scrollToId('home-sections')" id="t_browseBtn">Browse Sections</button>
+          </div>
+        </div>
+
+        <div class="heroSide">
+          <div class="miniCard">
+            <h3 id="t_quickTipsTitle">Quick tips</h3>
+            <ul>
+              <li id="t_tip1">Keep your documents organized (digital + paper).</li>
+              <li id="t_tip2">Track deadlines and submit early.</li>
+              <li id="t_tip3">If you are unsure, use AI Support for quick answers.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="home-sections">
+      <div class="sectionHead">
+        <div>
+          <h3 id="t_sectionsTitle">Main Sections</h3>
+          <p id="t_sectionsSub">Simple icons, clear steps, student-friendly wording.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- VISA -->
+        <div class="card" onclick="go('visa')">
+          <div class="iconBox" aria-hidden="true">
+            <!-- passport icon -->
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="3" width="12" height="18" rx="2"></rect>
+              <path d="M9 7h6"></path>
+              <circle cx="12" cy="13" r="2.2"></circle>
+              <path d="M10 18h4"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 id="t_visa">Visa</h4>
+            <p id="t_visaDesc">Visa services and guidance for international students.</p>
+          </div>
+        </div>
+
+        <!-- Medical -->
+        <div class="card" onclick="toast('Medical Check-ups')">
+          <div class="iconBox" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 9c0 6-8 12-8 12S4 15 4 9a4 4 0 0 1 8-1 4 4 0 0 1 8 1z"></path>
+              <path d="M12 8v6"></path>
+              <path d="M9 11h6"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 id="t_medical">Medical Check-ups</h4>
+            <p id="t_medicalDesc">Health requirements, medical reports, and clinic steps.</p>
+          </div>
+        </div>
+
+        <!-- Courses -->
+        <div class="card" onclick="toast('Courses')">
+          <div class="iconBox" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5h16"></path>
+              <path d="M4 9h16"></path>
+              <path d="M4 13h10"></path>
+              <path d="M4 17h10"></path>
+              <path d="M16 13l4 4"></path>
+              <path d="M20 13l-4 4"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 id="t_courses">Courses</h4>
+            <p id="t_coursesDesc">Course registration, schedules, and study planning.</p>
+          </div>
+        </div>
+
+        <!-- Pending Orders -->
+        <div class="card" onclick="toast('Pending Orders')">
+          <div class="iconBox" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 3h10"></path>
+              <path d="M7 7h10"></path>
+              <path d="M7 11h6"></path>
+              <rect x="5" y="3" width="14" height="18" rx="2"></rect>
+              <path d="M16 15h.01"></path>
+              <path d="M14 17h2"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 id="t_pending">Pending Orders</h4>
+            <p id="t_pendingDesc">Track unfinished requests (forms, approvals, tickets).</p>
+          </div>
+        </div>
+
+        <!-- University Residence -->
+        <div class="card" onclick="toast('University Residence')">
+          <div class="iconBox" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21h18"></path>
+              <path d="M6 21V8l6-4 6 4v13"></path>
+              <path d="M9 21v-6h6v6"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 id="t_residence">University Residence</h4>
+            <p id="t_residenceDesc">On-campus dorm rules, check-in steps, and support.</p>
+          </div>
+        </div>
+
+        <!-- Student Housing -->
+        <div class="card" onclick="toast('Student Housing')">
+          <div class="iconBox" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 10l9-7 9 7"></path>
+              <path d="M5 10v11h14V10"></path>
+              <path d="M9 21v-6h6v6"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 id="t_housing">Student Housing</h4>
+            <p id="t_housingDesc">Off-campus housing basics and practical suggestions.</p>
+          </div>
+        </div>
+
+        <!-- AI Support -->
+        <div class="card" onclick="openAiSupport()">
+          <div class="iconBox" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-1v1a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-1H5a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4z"></path>
+              <path d="M8 10h.01"></path>
+              <path d="M16 10h.01"></path>
+              <path d="M9 14c1 .9 2 .9 3 .9s2 0 3-.9"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 id="t_ai">AI Support</h4>
+            <p id="t_aiDesc">Ask support questions and get clear answers (demo).</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:14px" class="note" id="t_noteHome">
+        Note: This is a student project demo. The content uses dummy data and example steps for clarity.
+      </div>
+    </div>
+
+    <div class="footer" id="t_footer">
+      © 2025 UniGuide — Lobachevsky University (Demo Website). All data shown is placeholder.
+    </div>
+  </section>
+
+  <!-- VISA PAGE -->
+  <section class="page" id="page-visa">
+    <div class="breadcrumbs">
+      <a href="javascript:void(0)" onclick="go('home')" id="t_backHome">← Back to Home</a>
+      <span>•</span>
+      <span id="t_visaBreadcrumb">Visa</span>
+    </div>
+
+    <div class="sectionHead">
+      <div>
+        <h3 id="t_visaTitle">Visa Services</h3>
+        <p id="t_visaSub">Choose a topic below for clear, student-friendly guidance.</p>
+      </div>
+      <div class="navRow">
+        <button class="btn primary" onclick="go('home')" id="t_homeBtn">Home</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card" onclick="toast('Visa Extension')">
+        <div class="iconBox" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-3-6.7"></path>
+            <path d="M21 3v6h-6"></path>
+          </svg>
+        </div>
+        <div>
+          <h4 id="t_visaExt">Visa Extension</h4>
+          <p id="t_visaExtDesc">When and how to extend your student visa.</p>
+        </div>
+      </div>
+
+      <div class="card" onclick="toast('Required Documents')">
+        <div class="iconBox" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <path d="M14 2v6h6"></path>
+            <path d="M8 13h8"></path>
+            <path d="M8 17h8"></path>
+          </svg>
+        </div>
+        <div>
+          <h4 id="t_reqDocs">Required Documents</h4>
+          <p id="t_reqDocsDesc">Checklist of documents for visa procedures.</p>
+        </div>
+      </div>
+
+      <div class="card" onclick="toast('University Invitation')">
+        <div class="iconBox" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16v16H4z"></path>
+            <path d="M4 7l8 6 8-6"></path>
+          </svg>
+        </div>
+        <div>
+          <h4 id="t_invite">University Invitation</h4>
+          <p id="t_inviteDesc">Request or download your invitation letter (if applicable).</p>
+        </div>
+      </div>
+
+      <div class="card" onclick="toast('Visa Support')">
+        <div class="iconBox" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+            <path d="M8 9h8"></path>
+            <path d="M8 13h6"></path>
+          </svg>
+        </div>
+        <div>
+          <h4 id="t_visaSupport">Visa Support</h4>
+          <p id="t_visaSupportDesc">Where to ask for help and how to contact support.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px" class="note" id="t_noteVisa">
+      Tip: Always check deadlines and keep copies of your documents. If you are unsure, contact the International Office.
+    </div>
+
+    <div class="footer" id="t_footer2">
+      © 2025 UniGuide — Visa Section (Demo). Content is simplified for student clarity.
+    </div>
+  </section>
+
 </div>
 
 <script>
-  // LocalStorage demo state
-  const KEY = "uniguide_dash_demo_v2";
-
-  const state = load(KEY, {
-    user: null, // {id, profile}
-    tasks: [],
-    docs: []
-  });
-
-  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-  function load(k, fallback){
-    try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }
-    catch(e){ return fallback; }
+  // --- Simple toast (no design focus, just clarity) ---
+  function toast(title){
+    alert("UniGuide (Demo)\n\n" + title + "\n\nThis button is a placeholder in this student project.");
   }
-  function uid(){ return Math.random().toString(16).slice(2)+Date.now().toString(16); }
-
-  function toast(title, sub="Saved"){
-    const el = document.getElementById("toast");
-    document.getElementById("toastTitle").textContent = title;
-    document.getElementById("toastSub").textContent = sub;
-    el.style.display = "flex";
-    clearTimeout(window.__t);
-    window.__t = setTimeout(()=> el.style.display="none", 2200);
-  }
-
-  function setActive(a){
-    document.querySelectorAll(".nav a").forEach(x=>x.classList.remove("active"));
-    a.classList.add("active");
-  }
-
-  function scrollTo(id){
+  function scrollToId(id){
     document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"});
   }
 
-  function toggleTheme(){
-    document.body.classList.toggle("light");
-    toast("Theme switched", document.body.classList.contains("light") ? "Light mode" : "Dark mode");
+  // --- Routing (home / visa) ---
+  function go(page){
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById("page-" + page).classList.add("active");
+    window.location.hash = page;
+  }
+  // Hash support
+  const hash = (location.hash || "").replace("#","");
+  if(hash === "visa") go("visa");
+
+  // --- AI Support demo (simple) ---
+  function openAiSupport(){
+    alert(
+      "AI Support (Demo)\n\n" +
+      "Example question: What documents do I need for course registration?\n\n" +
+      "Example answer: Check your faculty requirements, passport/ID, and enrollment confirmation. If you are international, keep your visa documents ready.\n\n" +
+      "This demo uses placeholder responses."
+    );
   }
 
-  function plusDays(n){
-    const d = new Date(Date.now()+n*86400000);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,"0");
-    const dd = String(d.getDate()).padStart(2,"0");
-    return `${yyyy}-${mm}-${dd}`;
-  }
+  // --- Multi-language dictionary ---
+  const T = {
+    en: {
+      dir: "ltr",
+      brandTitle: "UniGuide",
+      brandSub: "Lobachevsky University — New Student Guide",
+      studentName: "Student:",
+      studentId: "ID:",
+      dummyBadge: "Dummy Account",
+      homeTitle: "Welcome to UniGuide",
+      homeDesc: "UniGuide helps new students understand the most important university steps when joining Lobachevsky University. Choose a section below to see clear guidance.",
+      goVisaBtn: "Open Visa",
+      browseBtn: "Browse Sections",
+      quickTipsTitle: "Quick tips",
+      tip1: "Keep your documents organized (digital + paper).",
+      tip2: "Track deadlines and submit early.",
+      tip3: "If you are unsure, use AI Support for quick answers.",
+      sectionsTitle: "Main Sections",
+      sectionsSub: "Simple icons, clear steps, student-friendly wording.",
+      visa: "Visa",
+      visaDesc: "Visa services and guidance for international students.",
+      medical: "Medical Check-ups",
+      medicalDesc: "Health requirements, medical reports, and clinic steps.",
+      courses: "Courses",
+      coursesDesc: "Course registration, schedules, and study planning.",
+      pending: "Pending Orders",
+      pendingDesc: "Track unfinished requests (forms, approvals, tickets).",
+      residence: "University Residence",
+      residenceDesc: "On-campus dorm rules, check-in steps, and support.",
+      housing: "Student Housing",
+      housingDesc: "Off-campus housing basics and practical suggestions.",
+      ai: "AI Support",
+      aiDesc: "Ask support questions and get clear answers (demo).",
+      noteHome: "Note: This is a student project demo. The content uses dummy data and example steps for clarity.",
+      footer: "© 2025 UniGuide — Lobachevsky University (Demo Website). All data shown is placeholder.",
 
-  function signin(){
-    const id = document.getElementById("studentId").value.trim();
-    const profile = document.getElementById("profile").value;
-    const msg = document.getElementById("signinMsg");
+      backHome: "← Back to Home",
+      visaBreadcrumb: "Visa",
+      visaTitle: "Visa Services",
+      visaSub: "Choose a topic below for clear, student-friendly guidance.",
+      homeBtn: "Home",
+      visaExt: "Visa Extension",
+      visaExtDesc: "When and how to extend your student visa.",
+      reqDocs: "Required Documents",
+      reqDocsDesc: "Checklist of documents for visa procedures.",
+      invite: "University Invitation",
+      inviteDesc: "Request or download your invitation letter (if applicable).",
+      visaSupport: "Visa Support",
+      visaSupportDesc: "Where to ask for help and how to contact support.",
+      noteVisa: "Tip: Always check deadlines and keep copies of your documents. If you are unsure, contact the International Office.",
+      footer2: "© 2025 UniGuide — Visa Section (Demo). Content is simplified for student clarity."
+    },
 
-    if(!id){
-      msg.textContent = "Please enter Student ID.";
-      toast("Missing ID", "Enter student ID to load checklist");
-      return;
+    ar: {
+      dir: "rtl",
+      brandTitle: "UniGuide",
+      brandSub: "جامعة لوباتشيفسكي — دليل الطالب الجديد",
+      studentName: "الطالب:",
+      studentId: "الرقم:",
+      dummyBadge: "حساب تجريبي",
+      homeTitle: "مرحبًا بك في UniGuide",
+      homeDesc: "يساعد UniGuide الطلاب الجدد على فهم أهم خطوات الجامعة عند الانضمام إلى جامعة لوباتشيفسكي. اختر قسمًا لعرض إرشادات واضحة.",
+      goVisaBtn: "قسم التأشيرة",
+      browseBtn: "تصفح الأقسام",
+      quickTipsTitle: "نصائح سريعة",
+      tip1: "احتفظ بملفاتك منظمة (ورقيًا ورقميًا).",
+      tip2: "تابع المواعيد النهائية وقدّم مبكرًا.",
+      tip3: "إذا كنت غير متأكد، استخدم دعم الذكاء الاصطناعي.",
+      sectionsTitle: "الأقسام الرئيسية",
+      sectionsSub: "أيقونات بسيطة وخطوات واضحة وبأسلوب مناسب للطلاب.",
+      visa: "التأشيرة",
+      visaDesc: "خدمات وإرشادات التأشيرة للطلاب الدوليين.",
+      medical: "الفحوصات الطبية",
+      medicalDesc: "متطلبات الصحة والتقارير الطبية والخطوات.",
+      courses: "المقررات",
+      coursesDesc: "تسجيل المقررات والجداول وتنظيم الدراسة.",
+      pending: "طلبات معلّقة",
+      pendingDesc: "تتبّع الطلبات غير المكتملة (نماذج، موافقات).",
+      residence: "سكن الجامعة",
+      residenceDesc: "قواعد السكن داخل الجامعة وخطوات السكن والدعم.",
+      housing: "سكن الطلاب",
+      housingDesc: "أساسيات السكن خارج الجامعة ونصائح عملية.",
+      ai: "دعم الذكاء الاصطناعي",
+      aiDesc: "اسأل أسئلة الدعم واحصل على إجابات واضحة (تجريبي).",
+      noteHome: "ملاحظة: هذا نموذج لمشروع طلابي ويستخدم بيانات وأمثلة وهمية للوضوح.",
+      footer: "© 2025 UniGuide — جامعة لوباتشيفسكي (موقع تجريبي). جميع البيانات المعروضة وهمية.",
+
+      backHome: "← العودة للرئيسية",
+      visaBreadcrumb: "التأشيرة",
+      visaTitle: "خدمات التأشيرة",
+      visaSub: "اختر موضوعًا لعرض إرشادات واضحة وبأسلوب مناسب للطلاب.",
+      homeBtn: "الرئيسية",
+      visaExt: "تمديد التأشيرة",
+      visaExtDesc: "متى وكيف تمدد تأشيرة الطالب.",
+      reqDocs: "المستندات المطلوبة",
+      reqDocsDesc: "قائمة المستندات اللازمة لإجراءات التأشيرة.",
+      invite: "دعوة الجامعة",
+      inviteDesc: "طلب أو تنزيل خطاب الدعوة (إن وُجد).",
+      visaSupport: "دعم التأشيرة",
+      visaSupportDesc: "أين تطلب المساعدة وكيف تتواصل مع الدعم.",
+      noteVisa: "نصيحة: تحقق دائمًا من المواعيد النهائية واحتفظ بنسخ من مستنداتك. إذا كنت غير متأكد، تواصل مع مكتب الطلاب الدوليين.",
+      footer2: "© 2025 UniGuide — قسم التأشيرة (تجريبي). المحتوى مبسّط لتوضيح الخطوات."
+    },
+
+    zh: {
+      dir: "ltr",
+      brandTitle: "UniGuide",
+      brandSub: "洛巴切夫斯基大学 — 新生指南",
+      studentName: "学生：",
+      studentId: "学号：",
+      dummyBadge: "演示账户",
+      homeTitle: "欢迎使用 UniGuide",
+      homeDesc: "UniGuide 帮助新生了解加入洛巴切夫斯基大学时最重要的步骤。请选择下方模块查看清晰指导。",
+      goVisaBtn: "签证模块",
+      browseBtn: "浏览模块",
+      quickTipsTitle: "快速提示",
+      tip1: "整理好你的文件（电子版+纸质版）。",
+      tip2: "关注截止日期并尽早提交。",
+      tip3: "不确定时可使用 AI 支持获取快速解答。",
+      sectionsTitle: "主要模块",
+      sectionsSub: "图标简洁、步骤清晰、文字友好。",
+      visa: "签证",
+      visaDesc: "国际学生签证相关服务与指导。",
+      medical: "体检",
+      medicalDesc: "健康要求、体检报告与流程。",
+      courses: "课程",
+      coursesDesc: "选课、课表与学习规划。",
+      pending: "待处理事项",
+      pendingDesc: "跟踪未完成的申请（表格、审批等）。",
+      residence: "校内宿舍",
+      residenceDesc: "宿舍规则、入住步骤与支持。",
+      housing: "校外住房",
+      housingDesc: "校外住房基础信息与建议。",
+      ai: "AI 支持",
+      aiDesc: "提问并获得清晰回答（演示）。",
+      noteHome: "说明：这是学生项目演示，使用虚拟数据与示例步骤。",
+      footer: "© 2025 UniGuide — 洛巴切夫斯基大学（演示网站）。所有数据为占位符。",
+
+      backHome: "← 返回首页",
+      visaBreadcrumb: "签证",
+      visaTitle: "签证服务",
+      visaSub: "请选择主题，查看清晰、友好的指导。",
+      homeBtn: "首页",
+      visaExt: "签证延期",
+      visaExtDesc: "何时以及如何办理学生签证延期。",
+      reqDocs: "所需材料",
+      reqDocsDesc: "签证流程所需材料清单。",
+      invite: "大学邀请函",
+      inviteDesc: "申请或下载邀请函（如适用）。",
+      visaSupport: "签证支持",
+      visaSupportDesc: "如何联系支持并获得帮助。",
+      noteVisa: "提示：请务必核对截止日期并保留文件副本。如不确定，请联系国际学生办公室。",
+      footer2: "© 2025 UniGuide — 签证模块（演示）。内容为清晰起见已简化。"
+    },
+
+    es: {
+      dir: "ltr",
+      brandTitle: "UniGuide",
+      brandSub: "Universidad Lobachevsky — Guía para nuevos estudiantes",
+      studentName: "Estudiante:",
+      studentId: "ID:",
+      dummyBadge: "Cuenta de prueba",
+      homeTitle: "Bienvenido a UniGuide",
+      homeDesc: "UniGuide ayuda a los nuevos estudiantes a comprender los pasos universitarios más importantes al unirse a la Universidad Lobachevsky. Elige una sección para ver una guía clara.",
+      goVisaBtn: "Abrir Visa",
+      browseBtn: "Ver secciones",
+      quickTipsTitle: "Consejos rápidos",
+      tip1: "Organiza tus documentos (digital + papel).",
+      tip2: "Sigue las fechas límite y entrega con tiempo.",
+      tip3: "Si tienes dudas, usa AI Support para respuestas rápidas.",
+      sectionsTitle: "Secciones principales",
+      sectionsSub: "Iconos simples, pasos claros y lenguaje amigable.",
+      visa: "Visa",
+      visaDesc: "Servicios y guía de visado para estudiantes internacionales.",
+      medical: "Revisiones médicas",
+      medicalDesc: "Requisitos de salud, informes médicos y pasos.",
+      courses: "Cursos",
+      coursesDesc: "Inscripción, horarios y planificación de estudio.",
+      pending: "Pendientes",
+      pendingDesc: "Seguimiento de solicitudes incompletas (formularios, aprobaciones).",
+      residence: "Residencia universitaria",
+      residenceDesc: "Reglas del dormitorio, registro y soporte.",
+      housing: "Alojamiento estudiantil",
+      housingDesc: "Información básica sobre alojamiento fuera del campus.",
+      ai: "Soporte de IA",
+      aiDesc: "Haz preguntas y obtén respuestas claras (demo).",
+      noteHome: "Nota: Esta es una demo de proyecto estudiantil. El contenido usa datos y pasos de ejemplo.",
+      footer: "© 2025 UniGuide — Universidad Lobachevsky (Demo). Todos los datos son de ejemplo.",
+
+      backHome: "← Volver al inicio",
+      visaBreadcrumb: "Visa",
+      visaTitle: "Servicios de Visa",
+      visaSub: "Elige un tema para ver una guía clara y amigable.",
+      homeBtn: "Inicio",
+      visaExt: "Extensión de Visa",
+      visaExtDesc: "Cuándo y cómo extender tu visa de estudiante.",
+      reqDocs: "Documentos requeridos",
+      reqDocsDesc: "Lista de documentos para los trámites de visa.",
+      invite: "Invitación de la universidad",
+      inviteDesc: "Solicita o descarga tu carta de invitación (si aplica).",
+      visaSupport: "Soporte de Visa",
+      visaSupportDesc: "Dónde pedir ayuda y cómo contactar soporte.",
+      noteVisa: "Consejo: Revisa las fechas límite y guarda copias de tus documentos. Si no estás seguro, contacta a la Oficina Internacional.",
+      footer2: "© 2025 UniGuide — Sección Visa (Demo). Contenido simplificado para claridad."
+    },
+
+    ru: {
+      dir: "ltr",
+      brandTitle: "UniGuide",
+      brandSub: "Университет Лобачевского — путеводитель для первокурсников",
+      studentName: "Студент:",
+      studentId: "ID:",
+      dummyBadge: "Демо-аккаунт",
+      homeTitle: "Добро пожаловать в UniGuide",
+      homeDesc: "UniGuide помогает новым студентам понять самые важные шаги при поступлении в Университет Лобачевского. Выберите раздел ниже для понятных инструкций.",
+      goVisaBtn: "Открыть Визу",
+      browseBtn: "Разделы",
+      quickTipsTitle: "Быстрые советы",
+      tip1: "Храните документы организованно (цифровые + бумажные).",
+      tip2: "Следите за дедлайнами и сдавайте заранее.",
+      tip3: "Если сомневаетесь — используйте AI Support для быстрых ответов.",
+      sectionsTitle: "Основные разделы",
+      sectionsSub: "Простые иконки, понятные шаги, дружелюбный текст.",
+      visa: "Виза",
+      visaDesc: "Визовые услуги и помощь для иностранных студентов.",
+      medical: "Медосмотр",
+      medicalDesc: "Требования по здоровью, справки и шаги.",
+      courses: "Курсы",
+      coursesDesc: "Регистрация, расписание и планирование обучения.",
+      pending: "Незавершённые заявки",
+      pendingDesc: "Отслеживайте незаконченные запросы (формы, согласования).",
+      residence: "Общежитие университета",
+      residenceDesc: "Правила, заселение и поддержка в общежитии.",
+      housing: "Жильё для студентов",
+      housingDesc: "Варианты жилья вне кампуса и практические советы.",
+      ai: "AI Поддержка",
+      aiDesc: "Задавайте вопросы и получайте ответы (демо).",
+      noteHome: "Примечание: это демо студенческого проекта. Используются примерные шаги и фиктивные данные.",
+      footer: "© 2025 UniGuide — Университет Лобачевского (Демо-сайт). Все данные являются примером.",
+
+      backHome: "← Назад на главную",
+      visaBreadcrumb: "Виза",
+      visaTitle: "Визовые услуги",
+      visaSub: "Выберите тему ниже для понятных инструкций.",
+      homeBtn: "Главная",
+      visaExt: "Продление визы",
+      visaExtDesc: "Когда и как продлить студенческую визу.",
+      reqDocs: "Необходимые документы",
+      reqDocsDesc: "Список документов для визовых процедур.",
+      invite: "Приглашение от университета",
+      inviteDesc: "Запрос или скачивание приглашения (если применимо).",
+      visaSupport: "Визовая поддержка",
+      visaSupportDesc: "Куда обращаться за помощью и как связаться с поддержкой.",
+      noteVisa: "Совет: всегда проверяйте дедлайны и храните копии документов. Если не уверены — обратитесь в международный отдел.",
+      footer2: "© 2025 UniGuide — Раздел Виза (Демо). Контент упрощён для ясности."
     }
+  };
 
-    state.user = {id, profile};
-    seedTasks(true);
-    save();
-    renderAll();
-    msg.textContent = `Loaded tasks for ${profile} (ID: ${id}).`;
-    toast("Welcome!", "Checklist updated");
+  function setText(id, value){ const el = document.getElementById(id); if(el) el.textContent = value; }
+
+  function applyLang(lang){
+    const d = T[lang] || T.en;
+
+    // direction
+    document.documentElement.setAttribute("dir", d.dir || "ltr");
+    document.documentElement.lang = lang;
+
+    // header
+    setText("t_brandTitle", d.brandTitle);
+    setText("t_brandSub", d.brandSub);
+    setText("t_studentName", d.studentName);
+    setText("t_studentId", d.studentId);
+    setText("t_dummyBadge", d.dummyBadge);
+
+    // home
+    setText("t_homeTitle", d.homeTitle);
+    setText("t_homeDesc", d.homeDesc);
+    setText("t_goVisaBtn", d.goVisaBtn);
+    setText("t_browseBtn", d.browseBtn);
+    setText("t_quickTipsTitle", d.quickTipsTitle);
+    setText("t_tip1", d.tip1);
+    setText("t_tip2", d.tip2);
+    setText("t_tip3", d.tip3);
+    setText("t_sectionsTitle", d.sectionsTitle);
+    setText("t_sectionsSub", d.sectionsSub);
+    setText("t_visa", d.visa);
+    setText("t_visaDesc", d.visaDesc);
+    setText("t_medical", d.medical);
+    setText("t_medicalDesc", d.medicalDesc);
+    setText("t_courses", d.courses);
+    setText("t_coursesDesc", d.coursesDesc);
+    setText("t_pending", d.pending);
+    setText("t_pendingDesc", d.pendingDesc);
+    setText("t_residence", d.residence);
+    setText("t_residenceDesc", d.residenceDesc);
+    setText("t_housing", d.housing);
+    setText("t_housingDesc", d.housingDesc);
+    setText("t_ai", d.ai);
+    setText("t_aiDesc", d.aiDesc);
+    setText("t_noteHome", d.noteHome);
+    setText("t_footer", d.footer);
+
+    // visa page
+    setText("t_backHome", d.backHome);
+    setText("t_visaBreadcrumb", d.visaBreadcrumb);
+    setText("t_visaTitle", d.visaTitle);
+    setText("t_visaSub", d.visaSub);
+    setText("t_homeBtn", d.homeBtn);
+    setText("t_visaExt", d.visaExt);
+    setText("t_visaExtDesc", d.visaExtDesc);
+    setText("t_reqDocs", d.reqDocs);
+    setText("t_reqDocsDesc", d.reqDocsDesc);
+    setText("t_invite", d.invite);
+    setText("t_inviteDesc", d.inviteDesc);
+    setText("t_visaSupport", d.visaSupport);
+    setText("t_visaSupportDesc", d.visaSupportDesc);
+    setText("t_noteVisa", d.noteVisa);
+    setText("t_footer2", d.footer2);
+
+    // store
+    localStorage.setItem("uniguide_lang", lang);
   }
 
-  function seedTasks(force=false){
-    if(!state.user) return;
-    if(state.tasks.length && !force) return;
+  // init language
+  const saved = localStorage.getItem("uniguide_lang") || "en";
+  document.getElementById("langSelect").value = saved;
+  applyLang(saved);
 
-    const profile = state.user.profile;
-    const base = [
-      {id:uid(), title:"Upload enrollment documents", deadline:plusDays(3), note:"Passport/ID + required forms.", done:false, verified:false},
-      {id:uid(), title:"Collect student card", deadline:plusDays(7), note:"Student Affairs (09:00–17:00).", done:false, verified:false},
-      {id:uid(), title:"Register courses", deadline:plusDays(10), note:"Check program requirements in portal.", done:false, verified:false},
-    ];
-
-    const intl = [
-      {id:uid(), title:"Visa/residency checklist", deadline:plusDays(5), note:"Follow International Office timeline.", done:false, verified:false},
-      {id:uid(), title:"Medical insurance confirmation", deadline:plusDays(8), note:"Save policy file in Documents.", done:false, verified:false},
-    ];
-
-    const busy = [
-      {id:uid(), title:"Set notification preferences", deadline:plusDays(1), note:"Enable weekly digest reminders.", done:false, verified:false},
-    ];
-
-    state.tasks = [...base];
-    if(profile === "International Student") state.tasks.push(...intl);
-    if(profile === "Busy Student") state.tasks.push(...busy);
-
-    save();
-    renderAll();
-    toast("Tasks seeded", "Profile-based checklist created");
-  }
-
-  function addTask(){
-    if(!state.user){
-      toast("Sign in first", "Use Student ID on Dashboard");
-      return;
-    }
-    const title = document.getElementById("newTaskTitle").value.trim();
-    const deadline = document.getElementById("newTaskDeadline").value || plusDays(7);
-    const note = document.getElementById("newTaskNote").value.trim() || "No note.";
-
-    if(!title){
-      toast("Task title required", "Write a short title");
-      return;
-    }
-
-    state.tasks.unshift({id:uid(), title, deadline, note, done:false, verified:false});
-    document.getElementById("newTaskTitle").value="";
-    document.getElementById("newTaskDeadline").value="";
-    document.getElementById("newTaskNote").value="";
-    save();
-    renderTasks();
-    toast("Task added", "It’s now on your board");
-  }
-
-  function toggleTask(id){
-    const t = state.tasks.find(x=>x.id===id);
-    if(!t) return;
-    t.done = !t.done;
-    save();
-    renderTasks();
-    toast(t.done ? "Completed!" : "Reopened", t.done ? "Marked done" : "Back to pending");
-  }
-
-  function uploadDoc(){
-    if(!state.user){
-      toast("Sign in first", "Use Student ID on Dashboard");
-      return;
-    }
-    const name = document.getElementById("docName").value.trim();
-    const file = document.getElementById("docFile").files?.[0];
-
-    if(!name){
-      toast("Document name required", "Give it a name");
-      return;
-    }
-
-    state.docs.unshift({
-      id:uid(),
-      name,
-      filename: file ? file.name : "(no file selected)",
-      date: new Date().toISOString()
-    });
-
-    document.getElementById("docName").value="";
-    document.getElementById("docFile").value="";
-    save();
-    renderDocs();
-    toast("Document saved", "Stored in demo list");
-  }
-
-  function adminVerify(){
-    if(!state.user){
-      toast("Sign in first", "Use Student ID on Dashboard");
-      return;
-    }
-    const id = document.getElementById("adminTaskSelect").value;
-    const t = state.tasks.find(x=>x.id===id);
-    if(!t){
-      toast("No task selected", "Pick a task");
-      return;
-    }
-    t.verified = true;
-    save();
-    renderTasks();
-    toast("Verified", "Office verification applied");
-  }
-
-  function clearDocs(){
-    state.docs = [];
-    save();
-    renderDocs();
-    toast("Documents cleared", "Demo list emptied");
-  }
-
-  function clearDemo(){
-    localStorage.removeItem(KEY);
-    location.reload();
-  }
-
-  function renderUser(){
-    const pill = document.getElementById("userPill");
-    const profileChip = document.getElementById("profileChip");
-    const idChip = document.getElementById("idChip");
-
-    if(!state.user){
-      pill.innerHTML = `<span class="dot"></span>Not signed in`;
-      profileChip.textContent = "Profile: —";
-      idChip.textContent = "Student ID: —";
-      return;
-    }
-    pill.innerHTML = `<span class="dot" style="background:var(--accent2)"></span>${state.user.profile}`;
-    profileChip.textContent = "Profile: " + state.user.profile;
-    idChip.textContent = "Student ID: " + state.user.id;
-  }
-
-  function renderKPIs(){
-    document.getElementById("kpiTasks").textContent = state.tasks.length;
-    document.getElementById("kpiDone").textContent = state.tasks.filter(t=>t.done).length;
-    document.getElementById("kpiDocs").textContent = state.docs.length;
-  }
-
-  function renderTasks(){
-    const list = document.getElementById("taskList");
-    list.innerHTML = "";
-
-    if(!state.user){
-      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
-        Sign in on Dashboard to load tasks.
-      </div>`;
-      renderAdminSelect();
-      renderUser(); renderKPIs();
-      return;
-    }
-
-    if(state.tasks.length === 0){
-      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
-        No tasks yet. Click “Seed tasks” or add one.
-      </div>`;
-      renderAdminSelect();
-      renderUser(); renderKPIs();
-      return;
-    }
-
-    state.tasks.forEach(t=>{
-      const el = document.createElement("div");
-      el.className = "task";
-      el.onclick = ()=>toggleTask(t.id);
-
-      const status = t.verified ? `<span class="badge ver">✅ Verified</span>` :
-                     t.done ? `<span class="badge ok">🟢 Done</span>` :
-                              `<span class="badge">🟡 Pending</span>`;
-
-      el.innerHTML = `
-        <div class="check">${t.done ? "✓" : ""}</div>
-        <div style="flex:1">
-          <b>${escapeHtml(t.title)}</b>
-          <small>Deadline: ${escapeHtml(t.deadline)}</small>
-          <small>${escapeHtml(t.note)}</small>
-          ${status}
-        </div>
-      `;
-      list.appendChild(el);
-    });
-
-    renderAdminSelect();
-    renderUser(); renderKPIs();
-  }
-
-  function renderDocs(){
-    const list = document.getElementById("docList");
-    list.innerHTML = "";
-
-    if(!state.user){
-      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
-        Sign in on Dashboard to save documents.
-      </div>`;
-      renderUser(); renderKPIs();
-      return;
-    }
-
-    if(state.docs.length === 0){
-      list.innerHTML = `<div style="color:var(--muted);font-weight:800">
-        No saved documents yet.
-      </div>`;
-      renderUser(); renderKPIs();
-      return;
-    }
-
-    state.docs.forEach(d=>{
-      const el = document.createElement("div");
-      el.className = "task";
-      el.style.cursor="default";
-      el.onclick = null;
-      el.innerHTML = `
-        <div class="check">📄</div>
-        <div style="flex:1">
-          <b>${escapeHtml(d.name)}</b>
-          <small>File: ${escapeHtml(d.filename)}</small>
-          <small>Saved: ${new Date(d.date).toLocaleString()}</small>
-        </div>
-      `;
-      list.appendChild(el);
-    });
-
-    renderUser(); renderKPIs();
-  }
-
-  function renderAdminSelect(){
-    const sel = document.getElementById("adminTaskSelect");
-    sel.innerHTML = "";
-    state.tasks.forEach(t=>{
-      const opt = document.createElement("option");
-      opt.value = t.id;
-      opt.textContent = `${t.title} (${t.verified ? "Verified" : "Not verified"})`;
-      sel.appendChild(opt);
-    });
-  }
-
-  function escapeHtml(s){
-    return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-  }
-
-  function renderAll(){
-    renderUser();
-    renderTasks();
-    renderDocs();
-    renderKPIs();
-  }
-
-  renderAll();
+  document.getElementById("langSelect").addEventListener("change", (e)=>{
+    applyLang(e.target.value);
+  });
 </script>
-
 </body>
 </html>
